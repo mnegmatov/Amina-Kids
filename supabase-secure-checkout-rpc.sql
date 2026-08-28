@@ -288,16 +288,16 @@ begin
   )
   select
     v_order_id,
-    v_item ->> 'product_id',
+    item_row ->> 'product_id',
     p.name,
-    v_item ->> 'color_name',
-    v_item ->> 'color_hex',
-    v_item ->> 'size',
-    (v_item ->> 'quantity')::int,
+    item_row ->> 'color_name',
+    item_row ->> 'color_hex',
+    item_row ->> 'size',
+    (item_row ->> 'quantity')::int,
     p.price,
-    p.price * (v_item ->> 'quantity')::int
-  from jsonb_array_elements(p_items) as v_item
-  join public.products p on p.id = v_item ->> 'product_id';
+    p.price * (item_row ->> 'quantity')::int
+  from jsonb_array_elements(p_items) as item_row
+  join public.products p on p.id = item_row ->> 'product_id';
 
   return query select v_order_id, v_subtotal, v_discount_amount, v_delivery_amount, v_total;
 end;

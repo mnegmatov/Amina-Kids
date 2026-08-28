@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase, isSupabaseConfigured } from './supabase';
 import { CartItem } from '../types';
 
 /** Matches the server-side quantity cap in `create_order_secure()`. */
@@ -44,36 +44,63 @@ export interface StockStatus {
 export async function checkCartStock(cartItems: CartItem[]): Promise<StockStatus[]> {
   if (cartItems.length === 0) return [];
 
-  const productIds = [...new Set(cartItems.map((item) => item.product.id))];
-
-  const { data: variants, error } = await supabase
-    .from('product_variants')
-    .select('product_id, color_name, color_hex, size, stock_quantity')
-    .in('product_id', productIds);
-
-  if (error) throw error;
-
-  return cartItems.map((item) => {
-    const variant = (variants ?? []).find(
-      (v) =>
-        v.product_id === item.product.id &&
-        v.color_name === item.selectedColor.name &&
-        v.color_hex === item.selectedColor.hex &&
-        v.size === item.selectedSize
-    );
-
-    const availableQty = variant?.stock_quantity ?? 0;
-    const allowedQty = maxPurchasableQty(availableQty);
-
-    return {
+  if (!isSupabaseConfigured) {
+    return cartItems.map((item) => ({
       cartItemId: item.id,
       productName: item.product.name,
       colorName: item.selectedColor.name,
       size: item.selectedSize,
       requestedQty: item.quantity,
-      availableQty,
-      isAvailable: item.quantity > 0 && item.quantity <= allowedQty,
-      isOutOfStock: availableQty <= 0,
-    };
-  });
+      availableQty: MAX_CART_QUANTITY,
+      isAvailable: true,
+      isOutOfStock: false,
+    }));
+  }
+
+  try {
+    const productIds = [...new Set(cartItems.map((item) => item.product.id))];
+
+    const { data: variants, error } = await supabase
+      .from('product_variants')
+      .select('product_id, color_name, color_hex, size, stock_quantity')
+      .in('product_id', productIds);
+
+    if (error) throw error;
+
+    return cartItems.map((item) => {
+      const variant = (variants ?? []).find(
+        (v) =>
+          v.product_id === item.product.id &&
+          v.color_name === item.selectedColor.name &&
+          v.color_hex === item.selectedColor.hex &&
+          v.size === item.selectedSize
+      );
+
+      const availableQty = variant?.stock_quantity ?? 0;
+      const allowedQty = maxPurchasableQty(availableQty);
+
+      return {
+        cartItemId: item.id,
+        productName: item.product.name,
+        colorName: item.selectedColor.name,
+        size: item.selectedSize,
+        requestedQty: item.quantity,
+        availableQty,
+        isAvailable: item.quantity > 0 && item.quantity <= allowedQty,
+        isOutOfStock: availableQty <= 0,
+      };
+    });
+  } catch (err) {
+    console.warn('[checkCartStock] Advisory stock check failed, using fallback:', err);
+    return cartItems.map((item) => ({
+      cartItemId: item.id,
+      productName: item.product.name,
+      colorName: item.selectedColor.name,
+      size: item.selectedSize,
+      requestedQty: item.quantity,
+      availableQty: MAX_CART_QUANTITY,
+      isAvailable: true,
+      isOutOfStock: false,
+    }));
+  }
 }

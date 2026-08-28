@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { supabase, isSupabaseConfigured } from './supabase';
 
 export interface PromoValidationResult {
   success: boolean;
@@ -25,30 +25,47 @@ export async function validatePromoCode(code: string): Promise<PromoValidationRe
     return { success: false, message: 'Введите промокод', discountRate: 0 };
   }
 
-  const { data, error } = await supabase.rpc('validate_promo_code', { p_code: normalized });
-
-  if (error) {
-    console.error('Failed to validate promo code:', error);
+  if (!isSupabaseConfigured) {
     return {
       success: false,
-      message: 'Не удалось проверить промокод. Попробуйте ещё раз.',
+      message: 'Сервис промокодов временно недоступен',
       discountRate: 0,
     };
   }
 
-  const row = (Array.isArray(data) ? data[0] : data) as
-    | { is_valid: boolean; discount_percentage: number | null }
-    | undefined;
+  try {
+    const { data, error } = await supabase.rpc('validate_promo_code', { p_code: normalized });
 
-  if (!row || !row.is_valid || row.discount_percentage == null) {
-    return { success: false, message: 'Неверный или истёкший промокод', discountRate: 0 };
+    if (error) {
+      console.error('Failed to validate promo code:', error);
+      return {
+        success: false,
+        message: 'Не удалось проверить промокод. Попробуйте ещё раз.',
+        discountRate: 0,
+      };
+    }
+
+    const row = (Array.isArray(data) ? data[0] : data) as
+      | { is_valid: boolean; discount_percentage: number | null }
+      | undefined;
+
+    if (!row || !row.is_valid || row.discount_percentage == null) {
+      return { success: false, message: 'Неверный или истёкший промокод', discountRate: 0 };
+    }
+
+    return {
+      success: true,
+      message: `Промокод ${normalized.toUpperCase()} применён (-${row.discount_percentage}%)`,
+      discountRate: row.discount_percentage / 100,
+    };
+  } catch (err) {
+    console.error('[validatePromoCode] Network error:', err);
+    return {
+      success: false,
+      message: 'Не удалось проверить промокод. Проверьте соединение с интернетом.',
+      discountRate: 0,
+    };
   }
-
-  return {
-    success: true,
-    message: `Промокод ${normalized.toUpperCase()} применён (-${row.discount_percentage}%)`,
-    discountRate: row.discount_percentage / 100,
-  };
 }
 
 /**
