@@ -40,7 +40,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const discountAmount = Math.round(subtotal * promoDiscount);
-  const deliveryFee = formData.deliveryMethod === 'showroom' ? 0 : subtotal >= 5000 ? 0 : 390;
+  const deliveryFee = formData.deliveryMethod === 'showroom' ? 0 : (subtotal - discountAmount) >= 5000 ? 0 : 390;
   const grandTotal = subtotal - discountAmount + deliveryFee;
 
   const handleSubmitOrder = async (e: React.FormEvent) => {
@@ -168,7 +168,9 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
         <button
           type="button"
           onClick={() => {
-            if (formData.fullName.trim() && formData.phone.trim() && /\S+@\S+\.\S+/.test(formData.email.trim())) {
+            const emailValid = /\S+@\S+\.\S+/.test(formData.email.trim());
+            const phoneValid = normalizePhoneNumber(formData.phone).replace(/\D/g, '').length >= 7;
+            if (formData.fullName.trim() && phoneValid && emailValid) {
               setStep(2);
             }
           }}
@@ -185,7 +187,9 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
         <button
           type="button"
           onClick={() => {
-            if (formData.fullName.trim() && formData.phone.trim() && /\S+@\S+\.\S+/.test(formData.email.trim())) {
+            const emailValid = /\S+@\S+\.\S+/.test(formData.email.trim());
+            const phoneValid = normalizePhoneNumber(formData.phone).replace(/\D/g, '').length >= 7;
+            if (formData.fullName.trim() && phoneValid && emailValid) {
               setStep(3);
             }
           }}
@@ -259,11 +263,16 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                     type="button"
                     onClick={() => {
                       const emailValid = /\S+@\S+\.\S+/.test(formData.email.trim());
-                      if (formData.fullName.trim() && formData.phone.trim() && emailValid) {
+                      const phoneDigits = normalizePhoneNumber(formData.phone).replace(/\D/g, '');
+                      if (!formData.fullName.trim()) {
+                        setStep1Error('Укажите имя и фамилию получателя');
+                      } else if (!formData.phone.trim() || phoneDigits.length < 7) {
+                        setStep1Error('Укажите корректный номер телефона (не менее 7 цифр)');
+                      } else if (!emailValid) {
+                        setStep1Error('Укажите корректный email для отправки чека');
+                      } else {
                         setStep1Error('');
                         setStep(2);
-                      } else {
-                        setStep1Error('Заполните имя, телефон и корректный email, чтобы продолжить');
                       }
                     }}
                     className="w-full sm:w-auto min-h-[46px] px-7 py-3 bg-[#E2A69B] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#C88B80] active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"

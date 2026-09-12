@@ -19,6 +19,7 @@ export function normalizePhoneNumber(phone: string): string {
   if (!trimmed) return '';
   const hasLeadingPlus = trimmed.startsWith('+');
   const digitsOnly = trimmed.replace(/\D/g, '');
+  if (!digitsOnly) return '';
   return hasLeadingPlus ? `+${digitsOnly}` : digitsOnly;
 }
 

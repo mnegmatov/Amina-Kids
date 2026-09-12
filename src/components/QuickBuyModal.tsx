@@ -62,10 +62,11 @@ export const QuickBuyModal: React.FC<QuickBuyModalProps> = ({
 
     const fullName = name.trim();
     const normalizedPhone = normalizePhoneNumber(phone) || phone.trim();
+    const phoneDigits = normalizedPhone.replace(/\D/g, '');
     const trimmedCity = city.trim() || 'Душанбе';
 
-    if (!fullName || !normalizedPhone) {
-      setError('Укажите имя и телефон.');
+    if (!fullName || !normalizedPhone || phoneDigits.length < 7) {
+      setError('Укажите имя и корректный номер телефона (не менее 7 цифр).');
       return;
     }
 

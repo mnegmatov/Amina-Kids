@@ -12,6 +12,7 @@ import {
   deleteAdminPromoCode,
   AdminPromoCodesError,
 } from './adminPromoCodes';
+import { formatPromoDateInput } from '../../lib/promoCodes';
 
 function emptyForm(): AdminPromoCodeInput {
   return {
@@ -80,7 +81,7 @@ export const AdminPromoCodesPage: React.FC = () => {
       code: promo.code,
       discount_percentage: promo.discount_percentage,
       is_active: promo.is_active,
-      expires_at: promo.expires_at ? promo.expires_at.slice(0, 10) : null,
+      expires_at: formatPromoDateInput(promo.expires_at) || null,
       usage_limit: promo.usage_limit,
     });
     setFormError('');

@@ -86,7 +86,7 @@ declare
   v_promo_usage_limit int;
   v_promo_usage_count int;
 begin
-  if p_items is null or jsonb_array_length(p_items) = 0 then
+  if p_items is null or jsonb_typeof(p_items) <> 'array' or jsonb_array_length(p_items) = 0 then
     raise exception 'Корзина пуста' using errcode = '22023';
   end if;
 
@@ -102,6 +102,10 @@ begin
     raise exception 'Укажите имя получателя' using errcode = '22023';
   end if;
 
+  if p_phone is null or length(trim(p_phone)) = 0 then
+    raise exception 'Укажите номер телефона' using errcode = '22023';
+  end if;
+
   if p_city is null or length(trim(p_city)) = 0 then
     raise exception 'Укажите город' using errcode = '22023';
   end if;
@@ -109,12 +113,16 @@ begin
   -- Recompute subtotal from authoritative `products.price`, validate variant existence,
   -- lock the variant row to protect against race conditions, check available stock,
   -- and decrement `product_variants.stock_quantity`.
-  for v_item in select * from jsonb_array_elements(p_items)
+  for v_item in select elem from jsonb_array_elements(p_items) as items_src(elem)
   loop
     v_product_id := v_item ->> 'product_id';
     v_color_name := v_item ->> 'color_name';
     v_color_hex := v_item ->> 'color_hex';
     v_size := v_item ->> 'size';
+
+    if (v_item ->> 'quantity') is null or (v_item ->> 'quantity') !~ '^[0-9]+$' then
+      raise exception 'Некорректное количество товара' using errcode = '22023';
+    end if;
     v_qty := (v_item ->> 'quantity')::int;
 
     if v_product_id is null or length(v_product_id) = 0 then
@@ -127,7 +135,7 @@ begin
       raise exception 'Некорректный вариант товара (цвет/размер) в заказе' using errcode = '22023';
     end if;
 
-    if v_qty is null or v_qty <= 0 or v_qty > 100 then
+    if v_qty <= 0 or v_qty > 100 then
       raise exception 'Некорректное количество товара' using errcode = '22023';
     end if;
 
@@ -288,16 +296,16 @@ begin
   )
   select
     v_order_id,
-    item_row ->> 'product_id',
-    p.name,
-    item_row ->> 'color_name',
-    item_row ->> 'color_hex',
-    item_row ->> 'size',
-    (item_row ->> 'quantity')::int,
-    p.price,
-    p.price * (item_row ->> 'quantity')::int
-  from jsonb_array_elements(p_items) as item_row
-  join public.products p on p.id = item_row ->> 'product_id';
+    ord_item ->> 'product_id',
+    prod.name,
+    ord_item ->> 'color_name',
+    ord_item ->> 'color_hex',
+    ord_item ->> 'size',
+    (ord_item ->> 'quantity')::int,
+    prod.price,
+    prod.price * (ord_item ->> 'quantity')::int
+  from jsonb_array_elements(p_items) as ord_item
+  join public.products prod on prod.id = ord_item ->> 'product_id';
 
   return query select v_order_id, v_subtotal, v_discount_amount, v_delivery_amount, v_total;
 end;

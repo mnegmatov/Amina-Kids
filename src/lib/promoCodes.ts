@@ -101,3 +101,22 @@ export function normalizePromoExpiresAt(expiresAt: string | null): string | null
   return trimmed;
 }
 
+/**
+ * Converts an ISO timestamp from Supabase into a YYYY-MM-DD string
+ * matching the user's local calendar day for HTML `<input type="date">`.
+ */
+export function formatPromoDateInput(expiresAt: string | null): string {
+  if (!expiresAt) return '';
+  const trimmed = expiresAt.trim();
+  if (!trimmed) return '';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+  const d = new Date(trimmed);
+  if (isNaN(d.getTime())) return '';
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+
+

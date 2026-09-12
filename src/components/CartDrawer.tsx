@@ -97,8 +97,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
   const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const discountAmount = Math.round(subtotal * promoDiscount);
   const total = subtotal - discountAmount;
-  const remainingForFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
-  const progressPercent = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
+  const remainingForFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - total);
+  const progressPercent = Math.min(100, Math.round((total / FREE_SHIPPING_THRESHOLD) * 100));
 
   const handleApplyPromo = async (e: React.FormEvent) => {
     e.preventDefault();
