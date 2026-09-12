@@ -3,6 +3,7 @@ import { ArrowLeft, ChevronRight, Loader2, Package, RefreshCw, ShoppingBag, User
 import { navigate } from '../navigation';
 import { formatPrice } from '../../utils/format';
 import { useBodyScrollLock } from '../../utils/useBodyScrollLock';
+import { AnimatePresence, motion } from 'motion/react';
 import {
   AdminOrder,
   AdminOrderItem,
@@ -67,6 +68,19 @@ export const AdminOrdersPage: React.FC = () => {
   useEffect(() => {
     void loadOrders();
   }, [loadOrders]);
+
+  useBodyScrollLock(Boolean(selectedOrder));
+
+  useEffect(() => {
+    if (!selectedOrder) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedOrder(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedOrder]);
 
   const openOrder = async (order: AdminOrder) => {
     setSelectedOrder(order);
@@ -270,101 +284,114 @@ export const AdminOrdersPage: React.FC = () => {
         </div>
       </main>
 
-      {selectedOrder && (
-        <div
-          className="fixed inset-0 z-50 bg-black/40 p-0 sm:p-6 flex justify-end"
-          onMouseDown={() => setSelectedOrder(null)}
-          role="presentation"
-        >
-          <aside
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="order-drawer-title"
-            className="w-full sm:max-w-xl bg-white sm:rounded-2xl shadow-2xl overflow-y-auto max-h-screen flex flex-col"
-            onMouseDown={(event) => event.stopPropagation()}
+      <AnimatePresence>
+        {selectedOrder && (
+          <div
+            className="fixed inset-0 z-50 p-0 sm:p-6 flex justify-end"
+            role="presentation"
           >
-            <div className="sticky top-0 z-10 bg-white border-b border-[#E8E0D5] px-5 py-4 flex items-center justify-between">
-              <div>
-                <p className="text-[10px] uppercase tracking-wide text-[#8A786A]">Заказ</p>
-                <h2 id="order-drawer-title" className="font-serif text-lg font-bold text-[#33261D]">{shortId(selectedOrder.id)}</h2>
-              </div>
-              <button
-                onClick={() => setSelectedOrder(null)}
-                className="p-2.5 rounded-xl hover:bg-[#FAF6F0] text-[#7A695D] cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"
-                aria-label="Закрыть детали заказа"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="p-4 sm:p-5 pb-safe pb-8 sm:pb-6 space-y-5 flex-1">
-              <section>
-                <div className="flex items-center gap-2 mb-2.5 text-[#33261D]"><User className="w-4 h-4" /><h3 className="text-sm font-bold">Клиент</h3></div>
-                <div className="bg-[#FAF6F0] rounded-xl p-3.5 sm:p-4 text-sm space-y-1">
-                  <p className="font-bold text-[#33261D]">{selectedOrder.full_name}</p>
-                  <p className="text-[#7A695D]">{selectedOrder.phone}</p>
-                  {selectedOrder.email && <p className="text-[#7A695D] break-all">{selectedOrder.email}</p>}
-                  <p className="text-[#7A695D]">{selectedOrder.city}{selectedOrder.address ? `, ${selectedOrder.address}` : ''}</p>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="fixed inset-0 bg-black/40 backdrop-blur-xs"
+              onClick={() => setSelectedOrder(null)}
+            />
+            <motion.aside
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="order-drawer-title"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'tween', duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+              className="w-full sm:max-w-xl bg-white sm:rounded-2xl shadow-2xl overflow-y-auto max-h-screen flex flex-col z-10"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="sticky top-0 z-10 bg-white border-b border-[#E8E0D5] px-5 py-4 flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] uppercase tracking-wide text-[#8A786A]">Заказ</p>
+                  <h2 id="order-drawer-title" className="font-serif text-lg font-bold text-[#33261D]">{shortId(selectedOrder.id)}</h2>
                 </div>
-              </section>
-
-              <section>
-                <div className="flex items-center gap-2 mb-2.5 text-[#33261D]"><Package className="w-4 h-4" /><h3 className="text-sm font-bold">Товары</h3></div>
-                {itemsLoading ? (
-                  <div className="py-8 flex justify-center text-[#E2A69B]"><Loader2 className="w-5 h-5 animate-spin" /></div>
-                ) : itemsError ? (
-                  <p className="text-xs text-[#A14D46] bg-[#FCE9E7] rounded-xl p-3 break-words">{itemsError}</p>
-                ) : (
-                  <div className="space-y-2">
-                    {items.length === 0 ? <p className="text-xs text-[#7A695D]">Товары заказа не найдены.</p> : items.map((item) => (
-                      <div key={String(item.id)} className="border border-[#E8E0D5] rounded-xl p-3 flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-[#FAF6F0] flex items-center justify-center shrink-0 text-[#CDBEB1]"><Package className="w-4 h-4" /></div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-semibold text-[#33261D] truncate">{item.product_name}</p>
-                          <p className="text-[11px] text-[#8A786A]">{item.color_name} · {item.size} · {item.quantity} шт.</p>
-                        </div>
-                        <p className="text-sm font-bold text-[#33261D] whitespace-nowrap">{formatPrice(item.total_price)} сомони</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </section>
-
-              <section>
-                <h3 className="text-sm font-bold text-[#33261D] mb-2.5">Доставка и оплата</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-                  <div className="bg-[#FAF6F0] rounded-xl p-3"><span className="text-[#8A786A] block mb-1">Доставка</span><b className="text-[#33261D]">{DELIVERY_LABELS[selectedOrder.delivery_method] ?? selectedOrder.delivery_method}</b></div>
-                  <div className="bg-[#FAF6F0] rounded-xl p-3"><span className="text-[#8A786A] block mb-1">Оплата</span><b className="text-[#33261D]">{PAYMENT_LABELS[selectedOrder.payment_method] ?? selectedOrder.payment_method}</b></div>
-                </div>
-                {selectedOrder.comment && <div className="mt-2.5 bg-[#FAF6F0] rounded-xl p-3 text-xs text-[#7A695D]"><b className="text-[#33261D]">Комментарий:</b> {selectedOrder.comment}</div>}
-                {selectedOrder.promo_code && <div className="mt-2 text-xs text-[#7A695D]">Промокод: <b>{selectedOrder.promo_code}</b></div>}
-              </section>
-
-              <section className="border-t border-[#E8E0D5] pt-4">
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between text-[#7A695D]"><span>Товары</span><span>{formatPrice(selectedOrder.subtotal)} сомони</span></div>
-                  <div className="flex justify-between text-[#7A695D]"><span>Скидка</span><span>−{formatPrice(selectedOrder.discount_amount)} сомони</span></div>
-                  <div className="flex justify-between text-[#7A695D]"><span>Доставка</span><span>{formatPrice(selectedOrder.delivery_amount)} сомони</span></div>
-                  <div className="flex justify-between text-base font-bold text-[#33261D] pt-2 border-t border-[#E8E0D5]/60"><span>Итого</span><span>{formatPrice(selectedOrder.total_amount)} сомони</span></div>
-                </div>
-              </section>
-
-              <section className="pt-2">
-                <h3 className="text-sm font-bold text-[#33261D] mb-2">Статус заказа</h3>
-                <select
-                  value={selectedOrder.status}
-                  onChange={(event) => void changeStatus(event.target.value as OrderStatus)}
-                  disabled={statusSaving}
-                  className="w-full px-4 py-3 min-h-[46px] rounded-xl border border-[#E8E0D5] bg-white text-sm font-semibold text-[#33261D] outline-none focus:border-[#E2A69B] disabled:opacity-50 cursor-pointer"
+                <button
+                  onClick={() => setSelectedOrder(null)}
+                  className="p-2.5 rounded-xl hover:bg-[#FAF6F0] text-[#7A695D] cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"
+                  aria-label="Закрыть детали заказа"
                 >
-                  {ORDER_STATUS_OPTIONS.map((status) => <option key={status} value={status}>{ORDER_STATUS_LABELS[status]}</option>)}
-                </select>
-                {statusSaving && <p className="mt-2 text-xs text-[#8A786A]">Сохраняем статус…</p>}
-              </section>
-            </div>
-          </aside>
-        </div>
-      )}
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="p-4 sm:p-5 pb-safe pb-8 sm:pb-6 space-y-5 flex-1">
+                <section>
+                  <div className="flex items-center gap-2 mb-2.5 text-[#33261D]"><User className="w-4 h-4" /><h3 className="text-sm font-bold">Клиент</h3></div>
+                  <div className="bg-[#FAF6F0] rounded-xl p-3.5 sm:p-4 text-sm space-y-1">
+                    <p className="font-bold text-[#33261D]">{selectedOrder.full_name}</p>
+                    <p className="text-[#7A695D]">{selectedOrder.phone}</p>
+                    {selectedOrder.email && <p className="text-[#7A695D] break-all">{selectedOrder.email}</p>}
+                    <p className="text-[#7A695D]">{selectedOrder.city}{selectedOrder.address ? `, ${selectedOrder.address}` : ''}</p>
+                  </div>
+                </section>
+
+                <section>
+                  <div className="flex items-center gap-2 mb-2.5 text-[#33261D]"><Package className="w-4 h-4" /><h3 className="text-sm font-bold">Товары</h3></div>
+                  {itemsLoading ? (
+                    <div className="py-8 flex justify-center text-[#E2A69B]"><Loader2 className="w-5 h-5 animate-spin" /></div>
+                  ) : itemsError ? (
+                    <p className="text-xs text-[#A14D46] bg-[#FCE9E7] rounded-xl p-3 break-words">{itemsError}</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {items.length === 0 ? <p className="text-xs text-[#7A695D]">Товары заказа не найдены.</p> : items.map((item) => (
+                        <div key={String(item.id)} className="border border-[#E8E0D5] rounded-xl p-3 flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-[#FAF6F0] flex items-center justify-center shrink-0 text-[#CDBEB1]"><Package className="w-4 h-4" /></div>
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-semibold text-[#33261D] truncate">{item.product_name}</p>
+                            <p className="text-[11px] text-[#8A786A]">{item.color_name} · {item.size} · {item.quantity} шт.</p>
+                          </div>
+                          <p className="text-sm font-bold text-[#33261D] whitespace-nowrap">{formatPrice(item.total_price)} сомони</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </section>
+
+                <section>
+                  <h3 className="text-sm font-bold text-[#33261D] mb-2.5">Доставка и оплата</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+                    <div className="bg-[#FAF6F0] rounded-xl p-3"><span className="text-[#8A786A] block mb-1">Доставка</span><b className="text-[#33261D]">{DELIVERY_LABELS[selectedOrder.delivery_method] ?? selectedOrder.delivery_method}</b></div>
+                    <div className="bg-[#FAF6F0] rounded-xl p-3"><span className="text-[#8A786A] block mb-1">Оплата</span><b className="text-[#33261D]">{PAYMENT_LABELS[selectedOrder.payment_method] ?? selectedOrder.payment_method}</b></div>
+                  </div>
+                  {selectedOrder.comment && <div className="mt-2.5 bg-[#FAF6F0] rounded-xl p-3 text-xs text-[#7A695D]"><b className="text-[#33261D]">Комментарий:</b> {selectedOrder.comment}</div>}
+                  {selectedOrder.promo_code && <div className="mt-2 text-xs text-[#7A695D]">Промокод: <b>{selectedOrder.promo_code}</b></div>}
+                </section>
+
+                <section className="border-t border-[#E8E0D5] pt-4">
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between text-[#7A695D]"><span>Товары</span><span>{formatPrice(selectedOrder.subtotal)} сомони</span></div>
+                    <div className="flex justify-between text-[#7A695D]"><span>Скидка</span><span>−{formatPrice(selectedOrder.discount_amount)} сомони</span></div>
+                    <div className="flex justify-between text-[#7A695D]"><span>Доставка</span><span>{formatPrice(selectedOrder.delivery_amount)} сомони</span></div>
+                    <div className="flex justify-between text-base font-bold text-[#33261D] pt-2 border-t border-[#E8E0D5]/60"><span>Итого</span><span>{formatPrice(selectedOrder.total_amount)} сомони</span></div>
+                  </div>
+                </section>
+
+                <section className="pt-2">
+                  <h3 className="text-sm font-bold text-[#33261D] mb-2">Статус заказа</h3>
+                  <select
+                    value={selectedOrder.status}
+                    onChange={(event) => void changeStatus(event.target.value as OrderStatus)}
+                    disabled={statusSaving}
+                    className="w-full px-4 py-3 min-h-[46px] rounded-xl border border-[#E8E0D5] bg-white text-sm font-semibold text-[#33261D] outline-none focus:border-[#E2A69B] disabled:opacity-50 cursor-pointer"
+                  >
+                    {ORDER_STATUS_OPTIONS.map((status) => <option key={status} value={status}>{ORDER_STATUS_LABELS[status]}</option>)}
+                  </select>
+                  {statusSaving && <p className="mt-2 text-xs text-[#8A786A]">Сохраняем статус…</p>}
+                </section>
+              </div>
+            </motion.aside>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

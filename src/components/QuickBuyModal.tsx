@@ -5,6 +5,7 @@ import { formatPrice, normalizePhoneNumber } from '../utils/format';
 import { useBodyScrollLock } from '../utils/useBodyScrollLock';
 import { createOrder } from '../lib/orders';
 import { MAX_CART_QUANTITY } from '../lib/stockCheck';
+import { AnimatePresence, motion } from 'motion/react';
 
 interface QuickBuyModalProps {
   item: {
@@ -54,11 +55,9 @@ export const QuickBuyModal: React.FC<QuickBuyModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [item, submitting, onClose]);
 
-  if (!item) return null;
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (submitting) return;
+    if (submitting || !item) return;
 
     const fullName = name.trim();
     const normalizedPhone = normalizePhoneNumber(phone) || phone.trim();
@@ -102,17 +101,39 @@ export const QuickBuyModal: React.FC<QuickBuyModalProps> = ({
     }
   };
 
-  const quantity = Math.min(MAX_CART_QUANTITY, Math.max(1, item.quantity));
-  const totalPrice = item.product.price * quantity;
+  const quantity = item ? Math.min(MAX_CART_QUANTITY, Math.max(1, item.quantity)) : 1;
+  const totalPrice = item ? item.product.price * quantity : 0;
 
   return (
-    <div
-      onClick={(e) => {
-        if (e.target === e.currentTarget && !submitting) onClose();
-      }}
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm animate-fade-in"
-    >
-      <div className="relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl p-5 sm:p-6 border border-[#E8E0D5] animate-modal-in max-h-[90vh] overflow-y-auto pb-safe">
+    <AnimatePresence>
+      {item && (
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Быстрый заказ"
+        >
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => {
+              if (!submitting) onClose();
+            }}
+            className="absolute inset-0 bg-[#2C2008]/60 backdrop-blur-sm"
+          />
+
+          {/* Modal Container */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
+            className="relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl p-5 sm:p-6 border border-[#E8E0D5] max-h-[90vh] overflow-y-auto pb-safe z-10"
+            onClick={(e) => e.stopPropagation()}
+          >
         {/* Mobile handle indicator */}
         <div className="w-12 h-1.5 bg-[#E8E0D5] rounded-full mx-auto mb-4 sm:hidden" />
 
@@ -224,7 +245,7 @@ export const QuickBuyModal: React.FC<QuickBuyModalProps> = ({
             <button
               type="submit"
               disabled={submitting}
-              className="w-full min-h-[48px] py-3.5 bg-[#E2A69B] hover:bg-[#C88B80] active:scale-[0.99] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-md transition-all mt-2 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full min-h-[48px] py-3.5 bg-[#E2A69B] hover:bg-[#C88B80] active:scale-[0.98] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-md transition-all mt-2 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
             >
               {submitting ? (
                 <>
@@ -241,8 +262,10 @@ export const QuickBuyModal: React.FC<QuickBuyModalProps> = ({
             </p>
           </form>
         )}
-      </div>
-    </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 };
 

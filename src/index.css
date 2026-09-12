@@ -13,6 +13,11 @@
     --text-main: #4A3A0B;
     --text-muted: #7A695D;
     --border-subtle: #E8E0D5;
+
+    /* Emil Kowalski motion design curves */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
   }
 
   * {
@@ -122,16 +127,16 @@
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.22s var(--ease-out) forwards;
 }
 
 @keyframes modalScaleIn {
-  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  from { opacity: 0; transform: scale(0.96) translateY(6px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .animate-modal-in {
-  animation: modalScaleIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: modalScaleIn 0.22s var(--ease-out) forwards;
 }
 
 @keyframes drawerSlideInLeft {
@@ -140,7 +145,7 @@
 }
 
 .animate-drawer-in-left {
-  animation: drawerSlideInLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: drawerSlideInLeft 0.28s var(--ease-drawer) forwards;
 }
 
 @keyframes drawerSlideInRight {
@@ -149,7 +154,16 @@
 }
 
 .animate-drawer-in-right {
-  animation: drawerSlideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: drawerSlideInRight 0.28s var(--ease-drawer) forwards;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.24s var(--ease-drawer) forwards;
 }
 
 /* Consistent, premium focus states */
@@ -162,4 +176,17 @@ select:focus-visible {
   outline-offset: 2px;
   border-radius: 8px;
 }
+
+/* Global A11y Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 

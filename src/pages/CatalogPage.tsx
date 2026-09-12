@@ -3,6 +3,7 @@ import { Product, ProductCategory, FilterState, ProductColor } from '../types';
 import { ProductCard } from '../components/ProductCard';
 import { SlidersHorizontal, X, RotateCcw, Search, LayoutGrid, Square, Check } from 'lucide-react';
 import { useBodyScrollLock } from '../utils/useBodyScrollLock';
+import { AnimatePresence, motion } from 'motion/react';
 
 interface CatalogPageProps {
   products: Product[];
@@ -374,73 +375,106 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           {activeFiltersCount > 0 && (
             <div className="flex flex-wrap items-center gap-2 p-1">
               <span className="text-xs text-[#7A695D] font-medium">Применено:</span>
-              {filters.category !== 'all' && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F8EBE8] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E2A69B]/40">
-                  <span>{categoryLabels[filters.category] ?? filters.category}</span>
-                  <button
-                    onClick={() => setFilters({ ...filters, category: 'all' })}
-                    className="p-0.5 hover:text-[#E2A69B]"
-                    aria-label="Удалить фильтр категории"
+              <AnimatePresence>
+                {filters.category !== 'all' && (
+                  <motion.span
+                    layout
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.15 }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F8EBE8] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E2A69B]/40"
                   >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </span>
-              )}
-              {filters.ageGroup !== 'all' && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FAF6F0] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E8E0D5]">
-                  <span>Возраст: {filters.ageGroup}</span>
-                  <button
-                    onClick={() => setFilters({ ...filters, ageGroup: 'all' })}
-                    className="p-0.5 hover:text-[#E2A69B]"
-                    aria-label="Удалить фильтр возраста"
+                    <span>{categoryLabels[filters.category] ?? filters.category}</span>
+                    <button
+                      onClick={() => setFilters({ ...filters, category: 'all' })}
+                      className="p-0.5 hover:text-[#E2A69B] cursor-pointer"
+                      aria-label="Удалить фильтр категории"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </motion.span>
+                )}
+                {filters.ageGroup !== 'all' && (
+                  <motion.span
+                    layout
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.15 }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FAF6F0] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E8E0D5]"
                   >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </span>
-              )}
-              {filters.sizes.map((s) => (
-                <span
-                  key={s}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FAF6F0] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E8E0D5]"
-                >
-                  <span>Размер: {s}</span>
-                  <button
-                    onClick={() => toggleSizeFilter(s)}
-                    className="p-0.5 hover:text-[#E2A69B]"
-                    aria-label={`Удалить размер ${s}`}
+                    <span>Возраст: {filters.ageGroup}</span>
+                    <button
+                      onClick={() => setFilters({ ...filters, ageGroup: 'all' })}
+                      className="p-0.5 hover:text-[#E2A69B] cursor-pointer"
+                      aria-label="Удалить фильтр возраста"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </motion.span>
+                )}
+                {filters.sizes.map((s) => (
+                  <motion.span
+                    layout
+                    key={s}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.15 }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FAF6F0] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E8E0D5]"
                   >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </span>
-              ))}
-              {filters.colors.map((hex) => (
-                <span
-                  key={hex}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FAF6F0] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E8E0D5]"
-                >
-                  <span className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: hex }} />
-                  <span>{availableColors.find((ac) => ac.hex === hex)?.name ?? hex}</span>
-                  <button
-                    onClick={() => toggleColorFilter(hex)}
-                    className="p-0.5 hover:text-[#E2A69B]"
-                    aria-label="Удалить фильтр цвета"
+                    <span>Размер: {s}</span>
+                    <button
+                      onClick={() => toggleSizeFilter(s)}
+                      className="p-0.5 hover:text-[#E2A69B] cursor-pointer"
+                      aria-label={`Удалить размер ${s}`}
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </motion.span>
+                ))}
+                {filters.colors.map((hex) => (
+                  <motion.span
+                    layout
+                    key={hex}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.15 }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FAF6F0] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E8E0D5]"
                   >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </span>
-              ))}
-              {filters.onlyDiscount && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F8EBE8] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E2A69B]/40">
-                  <span>Только скидки</span>
-                  <button
-                    onClick={() => setFilters({ ...filters, onlyDiscount: false })}
-                    className="p-0.5 hover:text-[#E2A69B]"
-                    aria-label="Удалить фильтр скидок"
+                    <span className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: hex }} />
+                    <span>{availableColors.find((ac) => ac.hex === hex)?.name ?? hex}</span>
+                    <button
+                      onClick={() => toggleColorFilter(hex)}
+                      className="p-0.5 hover:text-[#E2A69B] cursor-pointer"
+                      aria-label="Удалить фильтр цвета"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </motion.span>
+                ))}
+                {filters.onlyDiscount && (
+                  <motion.span
+                    layout
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.15 }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F8EBE8] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E2A69B]/40"
                   >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </span>
-              )}
+                    <span>Только скидки</span>
+                    <button
+                      onClick={() => setFilters({ ...filters, onlyDiscount: false })}
+                      className="p-0.5 hover:text-[#E2A69B] cursor-pointer"
+                      aria-label="Удалить фильтр скидок"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </motion.span>
+                )}
+              </AnimatePresence>
               <button
                 onClick={handleResetFilters}
                 className="text-xs text-[#E2A69B] hover:text-[#C88B80] font-bold ml-1 py-1 cursor-pointer transition-colors"
@@ -490,175 +524,187 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
       </div>
 
       {/* Mobile Filters Bottom Sheet */}
-      {mobileFilterOpen && (
-        <div
-          className="fixed inset-0 z-50 lg:hidden flex flex-col justify-end"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Фильтры каталога"
-        >
-          {/* Backdrop */}
+      <AnimatePresence>
+        {mobileFilterOpen && (
           <div
-            onClick={() => setMobileFilterOpen(false)}
-            className="fixed inset-0 bg-[#2C2008]/60 backdrop-blur-sm animate-fade-in"
-          />
+            className="fixed inset-0 z-50 lg:hidden flex flex-col justify-end"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Фильтры каталога"
+          >
+            {/* Backdrop */}
+            <motion.div
+              onClick={() => setMobileFilterOpen(false)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="fixed inset-0 bg-[#2C2008]/60 backdrop-blur-sm"
+            />
 
-          {/* Sheet Container */}
-          <div className="relative bg-white rounded-t-3xl shadow-2xl max-h-[88vh] flex flex-col border-t border-[#E8E0D5] animate-modal-in z-10">
-            {/* Sheet Handle & Header */}
-            <div className="p-4 pb-3 border-b border-[#E8E0D5] flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-[#E2A69B]" />
-                <h3 className="text-sm font-bold text-[#4A3A0B] uppercase tracking-wider">
-                  Фильтры каталога
-                </h3>
+            {/* Sheet Container */}
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'tween', duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+              className="relative bg-white rounded-t-3xl shadow-2xl max-h-[88vh] flex flex-col border-t border-[#E8E0D5] z-10"
+            >
+              {/* Sheet Handle & Header */}
+              <div className="p-4 pb-3 border-b border-[#E8E0D5] flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal className="w-4 h-4 text-[#E2A69B]" />
+                  <h3 className="text-sm font-bold text-[#4A3A0B] uppercase tracking-wider">
+                    Фильтры каталога
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setMobileFilterOpen(false)}
+                  className="min-w-[40px] min-h-[40px] flex items-center justify-center text-[#7A695D] hover:text-[#4A3A0B] rounded-full hover:bg-[#FAF6F0] cursor-pointer"
+                  aria-label="Закрыть фильтры"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
-              <button
-                onClick={() => setMobileFilterOpen(false)}
-                className="min-w-[40px] min-h-[40px] flex items-center justify-center text-[#7A695D] hover:text-[#4A3A0B] rounded-full hover:bg-[#FAF6F0]"
-                aria-label="Закрыть фильтры"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
 
-            {/* Scrollable Filter Content */}
-            <div className="overflow-y-auto p-4 sm:p-6 space-y-6 flex-1">
-              {/* Category */}
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-[#4A3A0B] uppercase tracking-wider">
-                  Категория
-                </label>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  {[
-                    { id: 'all', label: 'Все модели' },
-                    { id: 'girls', label: 'Девочкам' },
-                    { id: 'boys', label: 'Мальчикам' },
-                    { id: 'babies', label: 'Малышам' },
-                    { id: 'accessories', label: 'Аксессуары' },
-                  ].map((cat) => (
-                    <button
-                      key={cat.id}
-                      onClick={() => setFilters({ ...filters, category: cat.id as ProductCategory | 'all' })}
-                      className={`p-2.5 rounded-xl text-left font-semibold border transition-all ${
-                        filters.category === cat.id
-                          ? 'bg-[#F8EBE8] border-[#E2A69B] text-[#4A3A0B] font-bold shadow-sm'
-                          : 'bg-[#FAF6F0] border-[#E8E0D5] text-[#7A695D]'
-                      }`}
-                    >
-                      {cat.label}
-                    </button>
-                  ))}
+              {/* Scrollable Filter Content */}
+              <div className="overflow-y-auto p-4 sm:p-6 space-y-6 flex-1">
+                {/* Category */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-[#4A3A0B] uppercase tracking-wider">
+                    Категория
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    {[
+                      { id: 'all', label: 'Все модели' },
+                      { id: 'girls', label: 'Девочкам' },
+                      { id: 'boys', label: 'Мальчикам' },
+                      { id: 'babies', label: 'Малышам' },
+                      { id: 'accessories', label: 'Аксессуары' },
+                    ].map((cat) => (
+                      <button
+                        key={cat.id}
+                        onClick={() => setFilters({ ...filters, category: cat.id as ProductCategory | 'all' })}
+                        className={`p-2.5 rounded-xl text-left font-semibold border transition-all cursor-pointer ${
+                          filters.category === cat.id
+                            ? 'bg-[#F8EBE8] border-[#E2A69B] text-[#4A3A0B] font-bold shadow-sm'
+                            : 'bg-[#FAF6F0] border-[#E8E0D5] text-[#7A695D]'
+                        }`}
+                      >
+                        {cat.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Age */}
+                <div className="space-y-2 pt-4 border-t border-[#E8E0D5]">
+                  <label className="text-xs font-bold text-[#4A3A0B] uppercase tracking-wider">
+                    Возраст ребенка
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    {[
+                      { id: 'all', label: 'Все возрасты' },
+                      { id: '0-2', label: '0–2 года' },
+                      { id: '2-5', label: '2–5 лет' },
+                      { id: '6-10', label: '6–10 лет' },
+                    ].map((age) => (
+                      <button
+                        key={age.id}
+                        onClick={() => setFilters({ ...filters, ageGroup: age.id as FilterState['ageGroup'] })}
+                        className={`p-2.5 rounded-xl text-left font-semibold border transition-all cursor-pointer ${
+                          filters.ageGroup === age.id
+                            ? 'bg-[#F8EBE8] border-[#E2A69B] text-[#4A3A0B] font-bold shadow-sm'
+                            : 'bg-[#FAF6F0] border-[#E8E0D5] text-[#7A695D]'
+                        }`}
+                      >
+                        {age.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sizes */}
+                <div className="space-y-2 pt-4 border-t border-[#E8E0D5]">
+                  <label className="text-xs font-bold text-[#4A3A0B] uppercase tracking-wider">
+                    Размер (Рост, см)
+                  </label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {availableSizes.map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => toggleSizeFilter(s)}
+                        className={`py-2 px-1 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                          filters.sizes.includes(s)
+                            ? 'bg-[#4A3A0B] text-white border-[#4A3A0B] shadow-sm'
+                            : 'bg-[#FAF6F0] text-[#7A695D] border-[#E8E0D5]'
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Colors */}
+                <div className="space-y-2 pt-4 border-t border-[#E8E0D5]">
+                  <label className="text-xs font-bold text-[#4A3A0B] uppercase tracking-wider">
+                    Цвет
+                  </label>
+                  <div className="flex flex-wrap gap-2.5">
+                    {availableColors.map((c) => (
+                      <button
+                        key={c.name}
+                        onClick={() => toggleColorFilter(c.hex)}
+                        className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-medium transition-all cursor-pointer ${
+                          filters.colors.includes(c.hex)
+                            ? 'border-[#4A3A0B] bg-[#FAF6F0] font-bold ring-1 ring-[#4A3A0B]'
+                            : 'border-[#E8E0D5] bg-white text-[#7A695D]'
+                        }`}
+                      >
+                        <span className="w-3.5 h-3.5 rounded-full border border-black/10" style={{ backgroundColor: c.hex }} />
+                        <span>{c.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Discount checkbox */}
+                <div className="pt-4 border-t border-[#E8E0D5] flex items-center justify-between">
+                  <span className="text-xs font-bold text-[#4A3A0B]">
+                    Только со скидкой
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={filters.onlyDiscount}
+                    onChange={(e) => setFilters({ ...filters, onlyDiscount: e.target.checked })}
+                    className="accent-[#E2A69B] w-5 h-5 rounded cursor-pointer"
+                  />
                 </div>
               </div>
 
-              {/* Age */}
-              <div className="space-y-2 pt-4 border-t border-[#E8E0D5]">
-                <label className="text-xs font-bold text-[#4A3A0B] uppercase tracking-wider">
-                  Возраст ребенка
-                </label>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  {[
-                    { id: 'all', label: 'Все возрасты' },
-                    { id: '0-2', label: '0–2 года' },
-                    { id: '2-5', label: '2–5 лет' },
-                    { id: '6-10', label: '6–10 лет' },
-                  ].map((age) => (
-                    <button
-                      key={age.id}
-                      onClick={() => setFilters({ ...filters, ageGroup: age.id as FilterState['ageGroup'] })}
-                      className={`p-2.5 rounded-xl text-left font-semibold border transition-all ${
-                        filters.ageGroup === age.id
-                          ? 'bg-[#F8EBE8] border-[#E2A69B] text-[#4A3A0B] font-bold shadow-sm'
-                          : 'bg-[#FAF6F0] border-[#E8E0D5] text-[#7A695D]'
-                      }`}
-                    >
-                      {age.label}
-                    </button>
-                  ))}
-                </div>
+              {/* Sticky Bottom Actions */}
+              <div className="p-4 border-t border-[#E8E0D5] bg-[#FAF6F0] flex items-center gap-3 pb-safe">
+                <button
+                  onClick={handleResetFilters}
+                  className="py-3 px-4 border border-[#E8E0D5] bg-white text-[#7A695D] text-xs font-bold rounded-2xl hover:bg-[#F8EBE8] hover:text-[#4A3A0B] transition-colors min-h-[46px] cursor-pointer"
+                >
+                  Сбросить
+                </button>
+                <button
+                  onClick={() => setMobileFilterOpen(false)}
+                  className="flex-1 py-3 px-4 bg-[#4A3A0B] text-white text-xs font-extrabold rounded-2xl hover:bg-[#2C2008] transition-colors shadow-md min-h-[46px] flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>Показать товары</span>
+                  <span className="bg-[#E2A69B] text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
+                    {filteredProducts.length}
+                  </span>
+                </button>
               </div>
-
-              {/* Sizes */}
-              <div className="space-y-2 pt-4 border-t border-[#E8E0D5]">
-                <label className="text-xs font-bold text-[#4A3A0B] uppercase tracking-wider">
-                  Размер (Рост, см)
-                </label>
-                <div className="grid grid-cols-4 gap-2">
-                  {availableSizes.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => toggleSizeFilter(s)}
-                      className={`py-2 px-1 rounded-xl text-xs font-bold border transition-all ${
-                        filters.sizes.includes(s)
-                          ? 'bg-[#4A3A0B] text-white border-[#4A3A0B] shadow-sm'
-                          : 'bg-[#FAF6F0] text-[#7A695D] border-[#E8E0D5]'
-                      }`}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Colors */}
-              <div className="space-y-2 pt-4 border-t border-[#E8E0D5]">
-                <label className="text-xs font-bold text-[#4A3A0B] uppercase tracking-wider">
-                  Цвет
-                </label>
-                <div className="flex flex-wrap gap-2.5">
-                  {availableColors.map((c) => (
-                    <button
-                      key={c.name}
-                      onClick={() => toggleColorFilter(c.hex)}
-                      className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-medium transition-all ${
-                        filters.colors.includes(c.hex)
-                          ? 'border-[#4A3A0B] bg-[#FAF6F0] font-bold ring-1 ring-[#4A3A0B]'
-                          : 'border-[#E8E0D5] bg-white text-[#7A695D]'
-                      }`}
-                    >
-                      <span className="w-3.5 h-3.5 rounded-full border border-black/10" style={{ backgroundColor: c.hex }} />
-                      <span>{c.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Discount checkbox */}
-              <div className="pt-4 border-t border-[#E8E0D5] flex items-center justify-between">
-                <span className="text-xs font-bold text-[#4A3A0B]">
-                  Только со скидкой
-                </span>
-                <input
-                  type="checkbox"
-                  checked={filters.onlyDiscount}
-                  onChange={(e) => setFilters({ ...filters, onlyDiscount: e.target.checked })}
-                  className="accent-[#E2A69B] w-5 h-5 rounded cursor-pointer"
-                />
-              </div>
-            </div>
-
-            {/* Sticky Bottom Actions */}
-            <div className="p-4 border-t border-[#E8E0D5] bg-[#FAF6F0] flex items-center gap-3 pb-safe">
-              <button
-                onClick={handleResetFilters}
-                className="py-3 px-4 border border-[#E8E0D5] bg-white text-[#7A695D] text-xs font-bold rounded-2xl hover:bg-[#F8EBE8] hover:text-[#4A3A0B] transition-colors min-h-[46px]"
-              >
-                Сбросить
-              </button>
-              <button
-                onClick={() => setMobileFilterOpen(false)}
-                className="flex-1 py-3 px-4 bg-[#4A3A0B] text-white text-xs font-extrabold rounded-2xl hover:bg-[#2C2008] transition-colors shadow-md min-h-[46px] flex items-center justify-center gap-1.5"
-              >
-                <span>Показать товары</span>
-                <span className="bg-[#E2A69B] text-white text-[11px] font-bold px-2 py-0.5 rounded-full">
-                  {filteredProducts.length}
-                </span>
-              </button>
-            </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 };

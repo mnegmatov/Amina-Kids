@@ -3,6 +3,7 @@ import { Product, ProductColor } from '../types';
 import { X, Star, Heart, ShoppingBag, ShieldCheck, Truck, Ruler, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatPrice } from '../utils/format';
 import { useBodyScrollLock } from '../utils/useBodyScrollLock';
+import { AnimatePresence, motion } from 'motion/react';
 
 interface ProductModalProps {
   product: Product | null;
@@ -53,30 +54,51 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [product, onClose]);
 
-  if (!product || !selectedColor) return null;
-
   const handleAddToCart = () => {
+    if (!product || !selectedColor) return;
     onAddToCart(product, selectedColor, selectedSize, quantity);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
 
   const nextImage = () => {
+    if (!product) return;
     setActiveImageIndex((prev) => (prev + 1) % product.images.length);
   };
 
   const prevImage = () => {
+    if (!product) return;
     setActiveImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
   };
 
   return (
-    <div
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-6 bg-black/60 backdrop-blur-sm animate-fade-in"
-    >
-      <div className="relative w-full max-w-4xl bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col md:flex-row border border-[#E8E0D5] animate-modal-in pb-safe sm:pb-0">
+    <AnimatePresence>
+      {product && selectedColor && (
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-6"
+          role="dialog"
+          aria-modal="true"
+          aria-label={product.name}
+        >
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-[#2C2008]/60 backdrop-blur-sm"
+          />
+
+          {/* Modal Container */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
+            className="relative w-full max-w-4xl bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col md:flex-row border border-[#E8E0D5] pb-safe sm:pb-0 z-10"
+            onClick={(e) => e.stopPropagation()}
+          >
         {/* Mobile handle indicator */}
         <div className="w-12 h-1.5 bg-[#E8E0D5] rounded-full mx-auto my-2.5 sm:hidden shrink-0" />
 
@@ -277,7 +299,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 className={`flex-1 min-h-[46px] py-3 px-4 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer ${
                   added
                     ? 'bg-emerald-600 text-white'
-                    : 'bg-[#E2A69B] text-white hover:bg-[#C88B80] active:scale-[0.99]'
+                    : 'bg-[#E2A69B] text-white hover:bg-[#C88B80] active:scale-[0.97]'
                 }`}
               >
                 {added ? (
@@ -296,7 +318,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
               <button
                 onClick={() => onToggleWishlist(product)}
                 aria-label={isWishlisted ? 'Удалить из избранного' : 'Добавить в избранное'}
-                className={`min-w-[46px] min-h-[46px] flex items-center justify-center rounded-xl border transition-all cursor-pointer ${
+                className={`min-w-[46px] min-h-[46px] flex items-center justify-center rounded-xl border transition-all active:scale-95 cursor-pointer ${
                   isWishlisted
                     ? 'bg-[#E2A69B] border-[#E2A69B] text-white'
                     : 'border-[#E8E0D5] text-[#7A695D] hover:text-[#E2A69B] hover:border-[#E2A69B] active:bg-[#FAF6F0]'
@@ -309,7 +331,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
             <button
               onClick={() => onOpenQuickBuy(product, selectedColor, selectedSize, quantity)}
-              className="w-full min-h-[44px] py-2.5 px-4 bg-[#4A3A0B] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#2C2008] active:scale-[0.99] transition-all cursor-pointer"
+              className="w-full min-h-[44px] py-2.5 px-4 bg-[#4A3A0B] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#2C2008] active:scale-[0.97] transition-all cursor-pointer shadow-sm"
             >
               Купить в 1 клик
             </button>
@@ -327,7 +349,9 @@ export const ProductModal: React.FC<ProductModalProps> = ({
             </div>
           </div>
         </div>
-      </div>
-    </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 };

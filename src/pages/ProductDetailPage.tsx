@@ -5,6 +5,7 @@ import { CATEGORIES_INFO } from '../data/products';
 import { Star, Heart, ShoppingBag, ShieldCheck, Truck, Ruler, Check, ChevronRight, MessageSquare, AlertCircle, ChevronLeft, Zap } from 'lucide-react';
 import { formatPrice } from '../utils/format';
 import { fetchApprovedReviews, submitReview } from '../lib/reviews';
+import { AnimatePresence, motion } from 'motion/react';
 
 interface ProductDetailPageProps {
   product: Product;
@@ -403,20 +404,31 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
           {/* Quantity */}
           <div className="flex items-center gap-4">
             <span className="text-xs font-bold text-[#4A3A0B]">Количество:</span>
-            <div className="flex items-center border border-[#E8E0D5] rounded-xl bg-[#FAF6F0]">
+            <div className="flex items-center border border-[#E8E0D5] rounded-xl bg-[#FAF6F0] overflow-hidden">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="min-w-[40px] min-h-[40px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#4A3A0B] cursor-pointer"
+                className="min-w-[40px] min-h-[40px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#4A3A0B] active:bg-[#F0EBE1] cursor-pointer transition-colors"
                 aria-label="Уменьшить количество"
               >
                 -
               </button>
-              <span className="px-3 text-sm font-extrabold text-[#4A3A0B] min-w-[28px] text-center">
-                {quantity}
-              </span>
+              <div className="px-3 min-w-[28px] text-center overflow-hidden">
+                <AnimatePresence mode="popLayout" initial={false}>
+                  <motion.span
+                    key={quantity}
+                    initial={{ y: 6, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -6, opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="inline-block text-sm font-extrabold text-[#4A3A0B]"
+                  >
+                    {quantity}
+                  </motion.span>
+                </AnimatePresence>
+              </div>
               <button
                 onClick={() => setQuantity(Math.min(100, quantity + 1))}
-                className="min-w-[40px] min-h-[40px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#4A3A0B] cursor-pointer"
+                className="min-w-[40px] min-h-[40px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#4A3A0B] active:bg-[#F0EBE1] cursor-pointer transition-colors"
                 aria-label="Увеличить количество"
               >
                 +
@@ -548,7 +560,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               {/* Existing Reviews */}
               <div className="space-y-3">
                 {reviewsLoading ? (
-                  <p className="text-[#7A695D]">Загрузка отзывов...</p>
+                  <div className="space-y-3">
+                    {[1, 2].map((n) => (
+                      <div key={n} className="p-4 bg-[#FAF6F0] rounded-2xl border border-[#E8E0D5] space-y-2.5 animate-pulse">
+                        <div className="flex items-center justify-between">
+                          <div className="h-4 bg-[#E8E0D5] rounded w-28" />
+                          <div className="h-3 bg-[#E8E0D5] rounded w-16" />
+                        </div>
+                        <div className="h-3.5 bg-[#E8E0D5] rounded w-20" />
+                        <div className="h-3 bg-[#E8E0D5] rounded w-3/4" />
+                      </div>
+                    ))}
+                  </div>
                 ) : reviewsList.length === 0 ? (
                   <p className="text-[#7A695D]">Отзывов пока нет. Будьте первым!</p>
                 ) : (
@@ -667,52 +690,58 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       )}
 
       {/* Mobile Sticky Buy Bar (Visible on mobile when main CTA scrolled past) */}
-      {showStickyBar && (
-        <div
-          className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-[#E8E0D5] p-3 pb-safe z-40 lg:hidden shadow-[0_-4px_20px_rgba(74,58,11,0.08)] animate-slide-up"
-        >
-          <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <img
-                src={product.images[0]}
-                alt=""
-                className="w-11 h-11 rounded-xl object-cover border border-[#E8E0D5] shrink-0"
-              />
-              <div className="min-w-0">
-                <h4 className="text-xs font-bold text-[#4A3A0B] truncate leading-tight">{product.name}</h4>
-                <div className="flex items-center gap-1.5 text-[11px] text-[#7A695D] mt-0.5">
-                  <span className="font-extrabold text-[#4A3A0B]">{formatPrice(product.price)} с.</span>
-                  <span>•</span>
-                  <span>{selectedSize} см</span>
+      <AnimatePresence>
+        {showStickyBar && (
+          <motion.div
+            initial={{ y: '100%', opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: '100%', opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
+            className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-[#E8E0D5] p-3 pb-safe z-40 lg:hidden shadow-[0_-4px_20px_rgba(74,58,11,0.08)]"
+          >
+            <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <img
+                  src={product.images[0]}
+                  alt=""
+                  className="w-11 h-11 rounded-xl object-cover border border-[#E8E0D5] shrink-0"
+                />
+                <div className="min-w-0">
+                  <h4 className="text-xs font-bold text-[#4A3A0B] truncate leading-tight">{product.name}</h4>
+                  <div className="flex items-center gap-1.5 text-[11px] text-[#7A695D] mt-0.5">
+                    <span className="font-extrabold text-[#4A3A0B]">{formatPrice(product.price)} с.</span>
+                    <span>•</span>
+                    <span>{selectedSize} см</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                onClick={handleAddToCart}
-                className={`py-2.5 px-4 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-sm ${
-                  added
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-[#E2A69B] text-white hover:bg-[#C88B80]'
-                }`}
-              >
-                {added ? (
-                  <>
-                    <Check className="w-3.5 h-3.5" />
-                    <span>В корзине</span>
-                  </>
-                ) : (
-                  <>
-                    <ShoppingBag className="w-3.5 h-3.5" />
-                    <span>В корзину</span>
-                  </>
-                )}
-              </button>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={handleAddToCart}
+                  className={`py-2.5 px-4 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer ${
+                    added
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-[#E2A69B] text-white hover:bg-[#C88B80]'
+                  }`}
+                >
+                  {added ? (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>В корзине</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingBag className="w-3.5 h-3.5" />
+                      <span>В корзину</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

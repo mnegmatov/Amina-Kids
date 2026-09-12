@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Product, ProductColor } from '../types';
 import { Heart, Star, ShoppingBag, Check } from 'lucide-react';
 import { formatPrice } from '../utils/format';
+import { motion } from 'motion/react';
 
 interface ProductCardProps {
   product: Product;
@@ -82,27 +83,36 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         {/* Wishlist Button Top Right */}
-        <button
+        <motion.button
           type="button"
+          whileTap={{ scale: 0.85 }}
           onClick={(e) => {
             e.stopPropagation();
             onToggleWishlist(product);
           }}
-          className={`absolute top-2.5 right-2.5 w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-full backdrop-blur-md transition-all z-20 active:scale-90 ${
+          className={`absolute top-2.5 right-2.5 w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-full backdrop-blur-md transition-all z-20 cursor-pointer ${
             isWishlisted
               ? 'bg-[#E2A69B] text-white shadow-md'
               : 'bg-white/85 text-[#4A3A0B]/70 hover:text-[#E2A69B] hover:bg-white shadow-sm'
           }`}
           aria-label={isWishlisted ? 'Удалить из избранного' : 'Добавить в избранное'}
         >
-          <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
-        </button>
+          <motion.span
+            key={isWishlisted ? 'wishlisted' : 'unwishlisted'}
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+            className="flex items-center justify-center"
+          >
+            <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
+          </motion.span>
+        </motion.button>
 
         {/* Desktop Slide-Up Add To Cart Button */}
         <button
           type="button"
           onClick={handleAdd}
-          className={`hidden sm:flex absolute bottom-3 left-1/2 -translate-x-1/2 w-[88%] py-2.5 rounded-full items-center justify-center gap-1.5 text-center text-[11px] font-bold uppercase tracking-wider transition-all duration-300 shadow-md z-20 ${
+          className={`hidden sm:flex absolute bottom-3 left-1/2 -translate-x-1/2 w-[88%] py-2.5 rounded-full items-center justify-center gap-1.5 text-center text-[11px] font-bold uppercase tracking-wider transition-all duration-300 shadow-md z-20 cursor-pointer ${
             added
               ? 'bg-emerald-700 text-white translate-y-0 opacity-100'
               : 'bg-white text-[#4A3A0B] hover:bg-[#E2A69B] hover:text-white translate-y-12 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 active:scale-95'
@@ -180,7 +190,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             type="button"
             onClick={handleAdd}
-            className={`sm:hidden min-w-[36px] min-h-[36px] flex items-center justify-center rounded-xl transition-all active:scale-90 ${
+            className={`sm:hidden min-w-[36px] min-h-[36px] flex items-center justify-center rounded-xl transition-all active:scale-90 cursor-pointer ${
               added
                 ? 'bg-emerald-700 text-white'
                 : 'bg-[#F8EBE8] text-[#4A3A0B] hover:bg-[#E2A69B] hover:text-white'

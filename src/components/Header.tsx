@@ -174,7 +174,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Wishlist Button */}
             <button
               onClick={() => onNavigate('wishlist')}
-              className={`relative min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-all active:scale-95 ${
+              className={`relative min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full transition-all active:scale-95 cursor-pointer ${
                 activePage === 'wishlist'
                   ? 'text-[#E2A69B] bg-[#F8EBE8]'
                   : 'text-[#4A3A0B] hover:text-[#E2A69B] hover:bg-[#F8EBE8]/60'
@@ -182,26 +182,44 @@ export const Header: React.FC<HeaderProps> = ({
               aria-label={`Избранное, товаров: ${wishlistCount}`}
             >
               <Heart className={`w-5 h-5 transition-transform ${wishlistCount > 0 ? 'text-[#E2A69B] fill-[#E2A69B] scale-105' : ''}`} />
-              {wishlistCount > 0 && (
-                <span className="absolute top-1 right-1 bg-[#E2A69B] text-white text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center font-bold shadow-sm ring-2 ring-white">
-                  {wishlistCount}
-                </span>
-              )}
+              <AnimatePresence>
+                {wishlistCount > 0 && (
+                  <motion.span
+                    key={wishlistCount}
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.5, opacity: 0 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                    className="absolute top-1 right-1 bg-[#E2A69B] text-white text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center font-bold shadow-sm ring-2 ring-white"
+                  >
+                    {wishlistCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </button>
 
             {/* Cart Button */}
             <button
               onClick={onOpenCart}
-              className="relative flex items-center gap-2 min-h-[44px] py-2 px-3 sm:px-4 rounded-full bg-[#F8EBE8] hover:bg-[#E2A69B] text-[#4A3A0B] hover:text-white transition-all duration-300 border border-[#E2A69B]/40 active:scale-95 shadow-sm group"
+              className="relative flex items-center gap-2 min-h-[44px] py-2 px-3 sm:px-4 rounded-full bg-[#F8EBE8] hover:bg-[#E2A69B] text-[#4A3A0B] hover:text-white transition-all duration-300 border border-[#E2A69B]/40 active:scale-95 shadow-sm group cursor-pointer"
               aria-label={`Корзина, товаров: ${cartCount}, сумма: ${formatPrice(cartTotal)} сомони`}
             >
               <div className="relative flex items-center justify-center">
                 <ShoppingBag className="w-4 h-4 transition-transform group-hover:scale-110" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-2.5 -right-2.5 bg-[#4A3A0B] text-[#F7F1E5] text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center font-extrabold shadow-sm ring-2 ring-white">
-                    {cartCount}
-                  </span>
-                )}
+                <AnimatePresence>
+                  {cartCount > 0 && (
+                    <motion.span
+                      key={cartCount}
+                      initial={{ scale: 0.5, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.5, opacity: 0 }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                      className="absolute -top-2.5 -right-2.5 bg-[#4A3A0B] text-[#F7F1E5] text-[10px] min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center font-extrabold shadow-sm ring-2 ring-white"
+                    >
+                      {cartCount}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </div>
               <span className="hidden sm:inline text-xs font-extrabold uppercase tracking-wider">
                 {cartTotal > 0 ? `${formatPrice(cartTotal)} с.` : 'Корзина'}

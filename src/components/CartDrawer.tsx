@@ -172,8 +172,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               </div>
               <div className="w-full bg-[#E8E0D5] h-2 rounded-full overflow-hidden">
                 <div
-                  className="bg-[#E2A69B] h-full transition-all duration-500 rounded-full"
-                  style={{ width: `${progressPercent}%` }}
+                  className="bg-[#E2A69B] h-full w-full origin-left transition-transform duration-500 ease-out rounded-full"
+                  style={{ transform: `scaleX(${progressPercent / 100})` }}
                 />
               </div>
             </div>
