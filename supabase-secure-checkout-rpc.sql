@@ -65,7 +65,7 @@ declare
   v_discount_amount numeric := 0;
   v_delivery_amount numeric := 0;
   v_total numeric := 0;
-  v_item jsonb;
+  v_item_data jsonb;
   v_price numeric;
   v_qty int;
   v_product_id text;
@@ -113,17 +113,17 @@ begin
   -- Recompute subtotal from authoritative `products.price`, validate variant existence,
   -- lock the variant row to protect against race conditions, check available stock,
   -- and decrement `product_variants.stock_quantity`.
-  for v_item in select elem from jsonb_array_elements(p_items) as items_src(elem)
+  for v_item_data in select elem from jsonb_array_elements(p_items) as items_src(elem)
   loop
-    v_product_id := v_item ->> 'product_id';
-    v_color_name := v_item ->> 'color_name';
-    v_color_hex := v_item ->> 'color_hex';
-    v_size := v_item ->> 'size';
+    v_product_id := v_item_data ->> 'product_id';
+    v_color_name := v_item_data ->> 'color_name';
+    v_color_hex := v_item_data ->> 'color_hex';
+    v_size := v_item_data ->> 'size';
 
-    if (v_item ->> 'quantity') is null or (v_item ->> 'quantity') !~ '^[0-9]+$' then
+    if (v_item_data ->> 'quantity') is null or (v_item_data ->> 'quantity') !~ '^[0-9]+$' then
       raise exception 'Некорректное количество товара' using errcode = '22023';
     end if;
-    v_qty := (v_item ->> 'quantity')::int;
+    v_qty := (v_item_data ->> 'quantity')::int;
 
     if v_product_id is null or length(v_product_id) = 0 then
       raise exception 'Некорректный товар в заказе' using errcode = '22023';
@@ -296,16 +296,16 @@ begin
   )
   select
     v_order_id,
-    ord_item ->> 'product_id',
-    prod.name,
-    ord_item ->> 'color_name',
-    ord_item ->> 'color_hex',
-    ord_item ->> 'size',
-    (ord_item ->> 'quantity')::int,
-    prod.price,
-    prod.price * (ord_item ->> 'quantity')::int
-  from jsonb_array_elements(p_items) as ord_item
-  join public.products prod on prod.id = ord_item ->> 'product_id';
+    item_row.value ->> 'product_id',
+    p.name,
+    item_row.value ->> 'color_name',
+    item_row.value ->> 'color_hex',
+    item_row.value ->> 'size',
+    (item_row.value ->> 'quantity')::int,
+    p.price,
+    p.price * (item_row.value ->> 'quantity')::int
+  from jsonb_array_elements(p_items) as item_row
+  join public.products p on p.id = item_row.value ->> 'product_id';
 
   return query select v_order_id, v_subtotal, v_discount_amount, v_delivery_amount, v_total;
 end;

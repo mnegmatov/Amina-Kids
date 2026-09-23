@@ -719,7 +719,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={handleAddToCart}
-                  className={`py-2.5 px-4 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer ${
+                  className={`min-h-[44px] py-2.5 px-4 rounded-xl text-xs font-extrabold flex items-center gap-1.5 transition-all shadow-sm active:scale-95 cursor-pointer ${
                     added
                       ? 'bg-emerald-600 text-white'
                       : 'bg-[#E2A69B] text-white hover:bg-[#C88B80]'

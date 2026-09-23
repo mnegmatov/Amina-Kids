@@ -18,7 +18,7 @@ export const Toast: React.FC<ToastProps> = ({ toasts, onDismiss }) => {
             layout
             initial={{ opacity: 0, y: 20, scale: 0.94 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, x: 40, transition: { duration: 0.2, ease: 'easeIn' } }}
+            exit={{ opacity: 0, x: 40, transition: { duration: 0.2, ease: 'easeOut' } }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
             className="pointer-events-auto flex items-start gap-3 bg-white/95 backdrop-blur-md border border-[#E8E0D5] p-3.5 sm:p-4 rounded-2xl shadow-[0_8px_30px_rgba(74,58,11,0.12)]"
             role="alert"

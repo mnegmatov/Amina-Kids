@@ -81,6 +81,8 @@ alter table public.product_reviews
 alter table public.product_reviews enable row level security;
 
 -- Public (anon + authenticated) can only ever see approved reviews.
+-- Drop any legacy unmoderated policy that allowed viewing all reviews:
+drop policy if exists "Public can view product reviews" on public.product_reviews;
 drop policy if exists "Public can view approved reviews" on public.product_reviews;
 create policy "Public can view approved reviews"
 on public.product_reviews

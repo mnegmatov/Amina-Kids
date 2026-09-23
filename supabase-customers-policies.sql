@@ -49,17 +49,13 @@ using (
 );
 
 -- ----------------------------------------------------------------------------
--- STEP 3 — manual, once you've confirmed checkout works through the new RPC:
+-- STEP 3 — drop legacy anon-facing SELECT/INSERT/UPDATE policies:
 -- ----------------------------------------------------------------------------
--- Drop whatever anon-facing SELECT/INSERT/UPDATE policies STEP 1 showed you
--- on `customers`, by their real names, e.g.:
---
---   drop policy "<paste exact policyname>" on public.customers;
---
+drop policy if exists "Anyone can view customers by phone" on public.customers;
+drop policy if exists "Anyone can create customers" on public.customers;
+drop policy if exists "Anyone can update customers" on public.customers;
+
 -- After this step, anon/public has zero access to `customers` — no SELECT,
 -- no INSERT, no UPDATE. Only the admin SELECT policy above (for signed-in
 -- admins) and the SECURITY DEFINER RPC (for checkout) can touch this table.
---
--- Do this step AFTER supabase-secure-checkout-rpc.sql is applied and you've
--- placed one test order — otherwise checkout will break in the gap between
--- the two changes.
+

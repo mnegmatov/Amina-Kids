@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Product, ProductCategory, FilterState, ProductColor } from '../types';
 import { ProductCard } from '../components/ProductCard';
 import { SlidersHorizontal, X, RotateCcw, Search, LayoutGrid, Square, Check } from 'lucide-react';
@@ -28,6 +28,16 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   const [mobileGridCols, setMobileGridCols] = useState<1 | 2>(2);
 
   useBodyScrollLock(mobileFilterOpen);
+
+  // Close mobile filter sheet on Escape key
+  useEffect(() => {
+    if (!mobileFilterOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileFilterOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileFilterOpen]);
 
   const [filters, setFilters] = useState<FilterState>({
     category: initialCategory,
@@ -560,7 +570,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                 </div>
                 <button
                   onClick={() => setMobileFilterOpen(false)}
-                  className="min-w-[40px] min-h-[40px] flex items-center justify-center text-[#7A695D] hover:text-[#4A3A0B] rounded-full hover:bg-[#FAF6F0] cursor-pointer"
+                  className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#7A695D] hover:text-[#4A3A0B] rounded-full hover:bg-[#FAF6F0] cursor-pointer"
                   aria-label="Закрыть фильтры"
                 >
                   <X className="w-5 h-5" />

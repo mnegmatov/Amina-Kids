@@ -96,7 +96,7 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
               </div>
               <button
                 onClick={onClose}
-                className="min-w-[40px] min-h-[40px] flex items-center justify-center text-[#7A695D] hover:text-[#4A3A0B] hover:bg-white/80 rounded-full transition-colors active:scale-90 cursor-pointer"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#7A695D] hover:text-[#4A3A0B] hover:bg-white/80 rounded-full transition-colors active:scale-90 cursor-pointer"
                 aria-label="Закрыть таблицу размеров"
               >
                 <X className="w-5 h-5" />
@@ -216,7 +216,7 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
               </div>
               <button
                 onClick={onClose}
-                className="px-6 py-2.5 bg-[#4A3A0B] text-white text-xs font-bold rounded-xl hover:bg-[#2C2008] active:scale-[0.98] transition-all cursor-pointer min-h-[42px]"
+                className="px-6 py-2.5 bg-[#4A3A0B] text-white text-xs font-bold rounded-xl hover:bg-[#2C2008] active:scale-[0.98] transition-all cursor-pointer min-h-[44px]"
               >
                 Понятно
               </button>

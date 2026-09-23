@@ -141,7 +141,7 @@ export const QuickBuyModal: React.FC<QuickBuyModalProps> = ({
           onClick={onClose}
           disabled={submitting}
           aria-label="Закрыть окно"
-          className="absolute top-4 right-4 p-2 min-w-[36px] min-h-[36px] flex items-center justify-center text-[#7A695D] hover:text-[#33261D] rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50 cursor-pointer"
+          className="absolute top-3 right-3 p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-[#7A695D] hover:text-[#33261D] rounded-full hover:bg-gray-100 transition-colors disabled:opacity-50 cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>

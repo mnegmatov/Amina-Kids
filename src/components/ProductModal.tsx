@@ -105,7 +105,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-3 sm:top-4 right-3 sm:right-4 z-20 p-2 sm:p-2.5 bg-white/90 hover:bg-white text-[#7A695D] hover:text-[#33261D] rounded-full shadow-md backdrop-blur-md transition-all cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
+          className="absolute top-3 sm:top-4 right-3 sm:right-4 z-20 p-2 sm:p-2.5 bg-white/90 hover:bg-white text-[#7A695D] hover:text-[#33261D] rounded-full shadow-md backdrop-blur-md transition-all cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center"
           aria-label="Закрыть модальное окно"
         >
           <X className="w-5 h-5" />
@@ -125,14 +125,14 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 <button
                   onClick={prevImage}
                   aria-label="Предыдущее фото"
-                  className="absolute left-2 top-1/2 -translate-y-1/2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full bg-white/80 hover:bg-white text-[#33261D] shadow-md transition-all cursor-pointer"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-full bg-white/80 hover:bg-white text-[#33261D] shadow-md transition-all cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
                   onClick={nextImage}
                   aria-label="Следующее фото"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full bg-white/80 hover:bg-white text-[#33261D] shadow-md transition-all cursor-pointer"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-full bg-white/80 hover:bg-white text-[#33261D] shadow-md transition-all cursor-pointer"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -247,7 +247,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                     key={s}
                     type="button"
                     onClick={() => setSelectedSize(s)}
-                    className={`min-w-[44px] min-h-[38px] px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    className={`min-w-[44px] min-h-[44px] px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       selectedSize === s
                         ? 'bg-[#4A3A0B] text-white shadow-sm'
                         : 'bg-[#F7F1E5] text-[#33261D] hover:bg-[#E8E0D5]'
@@ -266,7 +266,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   aria-label="Уменьшить количество"
-                  className="min-w-[36px] min-h-[36px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#33261D] cursor-pointer"
+                  className="min-w-[40px] min-h-[40px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#33261D] cursor-pointer"
                 >
                   -
                 </button>
@@ -274,7 +274,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 <button
                   onClick={() => setQuantity(Math.min(100, quantity + 1))}
                   aria-label="Увеличить количество"
-                  className="min-w-[36px] min-h-[36px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#33261D] cursor-pointer"
+                  className="min-w-[40px] min-h-[40px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#33261D] cursor-pointer"
                 >
                   +
                 </button>

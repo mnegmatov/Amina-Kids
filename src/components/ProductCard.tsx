@@ -90,7 +90,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             e.stopPropagation();
             onToggleWishlist(product);
           }}
-          className={`absolute top-2.5 right-2.5 w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-full backdrop-blur-md transition-all z-20 cursor-pointer ${
+          className={`absolute top-2.5 right-2.5 w-10 h-10 sm:w-8 sm:h-8 flex items-center justify-center rounded-full backdrop-blur-md transition-all z-20 cursor-pointer ${
             isWishlisted
               ? 'bg-[#E2A69B] text-white shadow-md'
               : 'bg-white/85 text-[#4A3A0B]/70 hover:text-[#E2A69B] hover:bg-white shadow-sm'
@@ -190,7 +190,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             type="button"
             onClick={handleAdd}
-            className={`sm:hidden min-w-[36px] min-h-[36px] flex items-center justify-center rounded-xl transition-all active:scale-90 cursor-pointer ${
+            className={`sm:hidden min-w-[42px] min-h-[42px] flex items-center justify-center rounded-xl transition-all active:scale-90 cursor-pointer ${
               added
                 ? 'bg-emerald-700 text-white'
                 : 'bg-[#F8EBE8] text-[#4A3A0B] hover:bg-[#E2A69B] hover:text-white'

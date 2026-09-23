@@ -91,7 +91,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
           </span>
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-[#4A3A0B]">Спасибо за ваш заказ!</h1>
           <p className="text-xs sm:text-sm text-[#7A695D] max-w-md mx-auto leading-relaxed">
-            Мы отправляем подтверждение на {formData.email || 'указанный email'}. Наш менеджер свяжется с вами по номеру {formData.phone} для подтверждения доставки.
+            Мы отправили подтверждение на {formData.email || 'указанный email'}. Наш менеджер свяжется с вами по номеру {formData.phone} для согласования деталей доставки и оплаты.
           </p>
         </div>
 
@@ -109,11 +109,11 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
           <div className="flex justify-between text-[#7A695D]">
             <span>Способ оплаты:</span>
             <span className="font-semibold text-[#33261D]">
-              {formData.paymentMethod === 'card' ? 'Банковская карта' : 'Наличными при получении'}
+              {formData.paymentMethod === 'card' ? 'Банковская карта / перевод при получении' : 'Наличными при получении'}
             </span>
           </div>
           <div className="flex justify-between text-sm font-bold text-[#4A3A0B] pt-2.5 border-t border-[#E8E0D5]">
-            <span>Оплачено:</span>
+            <span>К оплате при получении:</span>
             <span>{formatPrice(confirmedTotal)} сомони</span>
           </div>
         </div>
@@ -370,8 +370,8 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
 
                 <div className="space-y-3">
                   {[
-                    { id: 'card', title: 'Банковская карта (Корти Милли, Visa, Mastercard)' },
-                    { id: 'cash', title: 'Наличными при получении курьеру' },
+                    { id: 'card', title: 'Банковская карта или перевод (Корти Милли, Visa, перевод при согласовании)' },
+                    { id: 'cash', title: 'Наличными при получении (курьеру или в шоуруме)' },
                   ].map((pay) => (
                     <label
                       key={pay.id}
@@ -415,7 +415,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                           <span>Оформляем заказ...</span>
                         </>
                       ) : (
-                        <span>Оформить и оплатить {formatPrice(grandTotal)} сомони</span>
+                        <span>Оформить заказ на {formatPrice(grandTotal)} сомони</span>
                       )}
                     </button>
                   </div>

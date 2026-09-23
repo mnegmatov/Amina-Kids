@@ -150,7 +150,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             <button
               onClick={onClose}
               aria-label="Закрыть корзину"
-              className="p-2 min-w-[40px] min-h-[40px] flex items-center justify-center text-[#7A695D] hover:text-[#33261D] rounded-full hover:bg-white/60 transition-colors cursor-pointer"
+              className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center text-[#7A695D] hover:text-[#33261D] rounded-full hover:bg-white/60 transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -237,7 +237,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         <h4 className="text-xs font-bold text-[#33261D] truncate pr-1">{item.product.name}</h4>
                         <button
                           onClick={() => onRemoveItem(item.id)}
-                          className="min-w-[32px] min-h-[32px] flex items-center justify-center text-[#7A695D] hover:text-red-500 transition-colors p-1 rounded-lg hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E2A69B] cursor-pointer shrink-0"
+                          className="min-w-[36px] min-h-[36px] flex items-center justify-center text-[#7A695D] hover:text-red-500 transition-colors p-1.5 rounded-lg hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E2A69B] cursor-pointer shrink-0"
                           title="Удалить"
                           aria-label={`Удалить ${item.product.name} из корзины`}
                         >
@@ -277,7 +277,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         <button
                           onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
                           aria-label="Уменьшить количество"
-                          className="min-w-[36px] min-h-[36px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#33261D] active:bg-[#FAF6F0] rounded-l-xl transition-colors cursor-pointer"
+                          className="min-w-[40px] min-h-[40px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#33261D] active:bg-[#FAF6F0] rounded-l-xl transition-colors cursor-pointer"
                         >
                           -
                         </button>
@@ -286,7 +286,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           onClick={() => onUpdateQuantity(item.id, Math.min(item.quantity + 1, maxQty))}
                           disabled={atMax || stock?.isOutOfStock}
                           aria-label="Увеличить количество"
-                          className={`min-w-[36px] min-h-[36px] flex items-center justify-center text-sm font-bold rounded-r-xl transition-colors ${
+                          className={`min-w-[40px] min-h-[40px] flex items-center justify-center text-sm font-bold rounded-r-xl transition-colors ${
                             atMax || stock?.isOutOfStock
                               ? 'text-gray-300 cursor-not-allowed'
                               : 'text-[#7A695D] hover:text-[#33261D] active:bg-[#FAF6F0] cursor-pointer'
@@ -329,7 +329,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                   <button
                     type="submit"
                     disabled={promoChecking || !promoInput.trim()}
-                    className="min-h-[40px] px-4 py-2 bg-[#4A3A0B] text-white text-xs font-semibold rounded-xl hover:bg-[#2C2008] active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                    className="min-h-[44px] px-4 py-2 bg-[#4A3A0B] text-white text-xs font-semibold rounded-xl hover:bg-[#2C2008] active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                   >
                     {promoChecking ? 'Проверка...' : 'Применить'}
                   </button>

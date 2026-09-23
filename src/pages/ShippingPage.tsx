@@ -28,8 +28,9 @@ export const ShippingPage: React.FC = () => {
           </div>
           <h3 className="text-sm font-bold text-[#33261D]">Способы оплаты</h3>
           <ul className="text-xs text-[#7A695D] space-y-2 leading-relaxed">
-            <li>• <strong>Банковская карта:</strong> Visa, Mastercard.</li>
-            <li>• <strong>Наличными при получении:</strong> курьеру или в пункте выдачи.</li>
+            <li>• <strong>Оплата при получении:</strong> наличными или картой (Корти Милли, Visa, Mastercard) курьеру или в шоуруме.</li>
+            <li>• <strong>Перевод / QR-оплата:</strong> Корти Милли, Алиф, Душанбе Сити по согласованию с менеджером при подтверждении заказа.</li>
+            <li>• <strong>Без предоплаты:</strong> оплата только после проверки заказа при получении.</li>
           </ul>
         </div>
       </div>
