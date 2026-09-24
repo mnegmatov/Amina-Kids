@@ -163,12 +163,12 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
             placeholder="Искать в каталоге..."
             value={filters.searchQuery}
             onChange={(e) => setFilters({ ...filters, searchQuery: e.target.value })}
-            className="w-full pl-9.5 pr-4 py-2.5 bg-white border border-[#E8E0D5] rounded-full text-xs text-[#4A3A0B] focus:outline-none focus:border-[#E2A69B] shadow-sm placeholder-[#7A695D]/60 min-h-[42px]"
+            className="w-full pl-9.5 pr-9 py-2.5 bg-white border border-[#E8E0D5] rounded-full text-base sm:text-xs text-[#4A3A0B] focus:outline-none focus:border-[#E2A69B] shadow-sm placeholder-[#7A695D]/60 min-h-[44px]"
           />
           {filters.searchQuery && (
             <button
               onClick={() => setFilters({ ...filters, searchQuery: '' })}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#7A695D] hover:text-[#4A3A0B] p-1"
+              className="absolute right-1 top-1/2 -translate-y-1/2 text-[#7A695D] hover:text-[#4A3A0B] min-w-[36px] min-h-[36px] flex items-center justify-center cursor-pointer"
               aria-label="Очистить поиск"
             >
               <X className="w-3.5 h-3.5" />
@@ -323,11 +323,11 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
         {/* Catalog Content Area */}
         <div className="flex-1 space-y-4 sm:space-y-6 w-full">
           {/* Top Control Bar (Mobile Filters toggle & Sorting & Grid Density) */}
-          <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 sm:p-3.5 rounded-2xl border border-[#E8E0D5] shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 sm:p-3.5 rounded-2xl sm:rounded-3xl border border-[#E8E0D5]/80 shadow-[0_2px_10px_rgba(74,58,11,0.03)]">
             {/* Mobile Filter Trigger Button */}
             <button
               onClick={() => setMobileFilterOpen(true)}
-              className="lg:hidden min-h-[42px] flex items-center gap-2 px-3.5 py-2 bg-[#F8EBE8] hover:bg-[#E2A69B] hover:text-white rounded-xl text-xs font-bold text-[#4A3A0B] border border-[#E2A69B]/40 active:scale-95 transition-all cursor-pointer"
+              className="lg:hidden min-h-[44px] flex items-center gap-2 px-4 py-2 bg-[#FAF6F0] hover:bg-[#F8EBE8] text-[#4A3A0B] rounded-2xl text-xs font-bold border border-[#E8E0D5] active:scale-95 transition-all cursor-pointer"
             >
               <SlidersHorizontal className="w-4 h-4 text-[#E2A69B]" />
               <span>Фильтры</span>
@@ -339,12 +339,12 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
             </button>
 
             {/* Mobile View Toggle (1 col vs 2 col) */}
-            <div className="sm:hidden flex items-center gap-1 bg-[#FAF6F0] p-1 rounded-xl border border-[#E8E0D5]">
+            <div className="sm:hidden flex items-center gap-1 bg-[#FAF6F0] p-1 rounded-2xl border border-[#E8E0D5]">
               <button
                 onClick={() => setMobileGridCols(1)}
-                className={`p-1.5 rounded-lg transition-colors ${
+                className={`p-1.5 rounded-xl transition-colors ${
                   mobileGridCols === 1
-                    ? 'bg-white text-[#4A3A0B] shadow-sm'
+                    ? 'bg-white text-[#4A3A0B] shadow-xs'
                     : 'text-[#7A695D] hover:text-[#4A3A0B]'
                 }`}
                 aria-label="1 колонка"
@@ -353,9 +353,9 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
               </button>
               <button
                 onClick={() => setMobileGridCols(2)}
-                className={`p-1.5 rounded-lg transition-colors ${
+                className={`p-1.5 rounded-xl transition-colors ${
                   mobileGridCols === 2
-                    ? 'bg-white text-[#4A3A0B] shadow-sm'
+                    ? 'bg-white text-[#4A3A0B] shadow-xs'
                     : 'text-[#7A695D] hover:text-[#4A3A0B]'
                 }`}
                 aria-label="2 колонки"
@@ -370,7 +370,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
               <select
                 value={filters.sortBy}
                 onChange={(e) => setFilters({ ...filters, sortBy: e.target.value as FilterState['sortBy'] })}
-                className="bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl py-2 px-3 text-xs font-semibold text-[#4A3A0B] focus:outline-none focus:border-[#E2A69B] min-h-[42px] cursor-pointer"
+                className="bg-[#FAF6F0] border border-[#E8E0D5] rounded-2xl py-2 px-3.5 text-base sm:text-xs font-semibold text-[#4A3A0B] focus:outline-none focus:border-[#E2A69B] min-h-[44px] cursor-pointer"
               >
                 <option value="popular">По популярности</option>
                 <option value="price-asc">Сначала дешевле</option>
@@ -381,110 +381,110 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
             </div>
           </div>
 
-          {/* Active filter chips */}
-          {activeFiltersCount > 0 && (
-            <div className="flex flex-wrap items-center gap-2 p-1">
-              <span className="text-xs text-[#7A695D] font-medium">Применено:</span>
-              <AnimatePresence>
-                {filters.category !== 'all' && (
-                  <motion.span
-                    layout
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.15 }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F8EBE8] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E2A69B]/40"
-                  >
-                    <span>{categoryLabels[filters.category] ?? filters.category}</span>
-                    <button
-                      onClick={() => setFilters({ ...filters, category: 'all' })}
-                      className="p-0.5 hover:text-[#E2A69B] cursor-pointer"
-                      aria-label="Удалить фильтр категории"
+            {/* Active filter chips */}
+            {activeFiltersCount > 0 && (
+              <div className="flex flex-wrap items-center gap-2 p-1">
+                <span className="text-xs text-[#7A695D] font-medium">Применено:</span>
+                <AnimatePresence>
+                  {filters.category !== 'all' && (
+                    <motion.span
+                      layout
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.15 }}
+                      className="inline-flex items-center gap-1.5 pl-3 pr-1 py-0.5 bg-[#F8EBE8] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E2A69B]/40"
                     >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </motion.span>
-                )}
-                {filters.ageGroup !== 'all' && (
-                  <motion.span
-                    layout
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.15 }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FAF6F0] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E8E0D5]"
-                  >
-                    <span>Возраст: {filters.ageGroup}</span>
-                    <button
-                      onClick={() => setFilters({ ...filters, ageGroup: 'all' })}
-                      className="p-0.5 hover:text-[#E2A69B] cursor-pointer"
-                      aria-label="Удалить фильтр возраста"
+                      <span>{categoryLabels[filters.category] ?? filters.category}</span>
+                      <button
+                        onClick={() => setFilters({ ...filters, category: 'all' })}
+                        className="min-w-[28px] min-h-[28px] flex items-center justify-center hover:text-[#E2A69B] cursor-pointer"
+                        aria-label="Удалить фильтр категории"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </motion.span>
+                  )}
+                  {filters.ageGroup !== 'all' && (
+                    <motion.span
+                      layout
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.15 }}
+                      className="inline-flex items-center gap-1.5 pl-3 pr-1 py-0.5 bg-[#FAF6F0] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E8E0D5]"
                     >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </motion.span>
-                )}
-                {filters.sizes.map((s) => (
-                  <motion.span
-                    layout
-                    key={s}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.15 }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FAF6F0] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E8E0D5]"
-                  >
-                    <span>Размер: {s}</span>
-                    <button
-                      onClick={() => toggleSizeFilter(s)}
-                      className="p-0.5 hover:text-[#E2A69B] cursor-pointer"
-                      aria-label={`Удалить размер ${s}`}
+                      <span>Возраст: {filters.ageGroup}</span>
+                      <button
+                        onClick={() => setFilters({ ...filters, ageGroup: 'all' })}
+                        className="min-w-[28px] min-h-[28px] flex items-center justify-center hover:text-[#E2A69B] cursor-pointer"
+                        aria-label="Удалить фильтр возраста"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </motion.span>
+                  )}
+                  {filters.sizes.map((s) => (
+                    <motion.span
+                      layout
+                      key={s}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.15 }}
+                      className="inline-flex items-center gap-1.5 pl-3 pr-1 py-0.5 bg-[#FAF6F0] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E8E0D5]"
                     >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </motion.span>
-                ))}
-                {filters.colors.map((hex) => (
-                  <motion.span
-                    layout
-                    key={hex}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.15 }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#FAF6F0] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E8E0D5]"
-                  >
-                    <span className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: hex }} />
-                    <span>{availableColors.find((ac) => ac.hex === hex)?.name ?? hex}</span>
-                    <button
-                      onClick={() => toggleColorFilter(hex)}
-                      className="p-0.5 hover:text-[#E2A69B] cursor-pointer"
-                      aria-label="Удалить фильтр цвета"
+                      <span>Размер: {s}</span>
+                      <button
+                        onClick={() => toggleSizeFilter(s)}
+                        className="min-w-[28px] min-h-[28px] flex items-center justify-center hover:text-[#E2A69B] cursor-pointer"
+                        aria-label={`Удалить размер ${s}`}
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </motion.span>
+                  ))}
+                  {filters.colors.map((hex) => (
+                    <motion.span
+                      layout
+                      key={hex}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.15 }}
+                      className="inline-flex items-center gap-1.5 pl-3 pr-1 py-0.5 bg-[#FAF6F0] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E8E0D5]"
                     >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </motion.span>
-                ))}
-                {filters.onlyDiscount && (
-                  <motion.span
-                    layout
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.15 }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#F8EBE8] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E2A69B]/40"
-                  >
-                    <span>Только скидки</span>
-                    <button
-                      onClick={() => setFilters({ ...filters, onlyDiscount: false })}
-                      className="p-0.5 hover:text-[#E2A69B] cursor-pointer"
-                      aria-label="Удалить фильтр скидок"
+                      <span className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: hex }} />
+                      <span>{availableColors.find((ac) => ac.hex === hex)?.name ?? hex}</span>
+                      <button
+                        onClick={() => toggleColorFilter(hex)}
+                        className="min-w-[28px] min-h-[28px] flex items-center justify-center hover:text-[#E2A69B] cursor-pointer"
+                        aria-label="Удалить фильтр цвета"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </motion.span>
+                  ))}
+                  {filters.onlyDiscount && (
+                    <motion.span
+                      layout
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.15 }}
+                      className="inline-flex items-center gap-1.5 pl-3 pr-1 py-0.5 bg-[#F8EBE8] text-[#4A3A0B] text-xs font-semibold rounded-full border border-[#E2A69B]/40"
                     >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </motion.span>
-                )}
-              </AnimatePresence>
+                      <span>Только скидки</span>
+                      <button
+                        onClick={() => setFilters({ ...filters, onlyDiscount: false })}
+                        className="min-w-[28px] min-h-[28px] flex items-center justify-center hover:text-[#E2A69B] cursor-pointer"
+                        aria-label="Удалить фильтр скидок"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               <button
                 onClick={handleResetFilters}
                 className="text-xs text-[#E2A69B] hover:text-[#C88B80] font-bold ml-1 py-1 cursor-pointer transition-colors"
@@ -558,8 +558,11 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'tween', duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-              className="relative bg-white rounded-t-3xl shadow-2xl max-h-[88vh] flex flex-col border-t border-[#E8E0D5] z-10"
+              className="relative bg-white rounded-t-3xl shadow-2xl max-h-[88dvh] overscroll-contain flex flex-col border-t border-[#E8E0D5] z-10"
             >
+              {/* Mobile handle indicator */}
+              <div className="w-12 h-1.5 bg-[#E8E0D5] rounded-full mx-auto mt-2.5 -mb-1 shrink-0" />
+
               {/* Sheet Handle & Header */}
               <div className="p-4 pb-3 border-b border-[#E8E0D5] flex items-center justify-between">
                 <div className="flex items-center gap-2">

@@ -18,7 +18,7 @@ export const ProductsSkeleton: React.FC<ProductsSkeletonProps> = ({ count = 8 })
             key={i}
             className="flex flex-col bg-white rounded-2xl border border-[#E8E0D5]/60 p-3 shadow-sm animate-pulse"
           >
-            <div className="aspect-[3/4] w-full bg-[#E2A69B]/10 rounded-2xl mb-3" />
+            <div className="aspect-[4/5] w-full bg-[#E2A69B]/10 rounded-2xl mb-3" />
             <div className="px-1 space-y-2">
               <div className="flex items-center justify-between">
                 <div className="h-2.5 w-1/3 bg-[#E8E0D5] rounded" />

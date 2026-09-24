@@ -62,7 +62,7 @@ export const ContactsPage: React.FC = () => {
         </div>
 
         {/* Feedback Form */}
-        <div className="p-8 bg-[#FAF6F0] rounded-3xl border border-[#E8E0D5] space-y-4">
+        <div className="p-5 sm:p-8 bg-[#FAF6F0] rounded-3xl border border-[#E8E0D5] space-y-4">
           <h3 className="text-base font-bold text-[#33261D]">Задать вопрос или записаться в шоурум</h3>
 
           {submitted ? (
@@ -72,45 +72,45 @@ export const ContactsPage: React.FC = () => {
               <p className="text-xs text-[#7A695D]">Мы свяжемся с вами в течение 15 минут.</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-3 text-xs">
+            <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
               <div>
-                <label className="block font-semibold text-[#33261D] mb-1">Ваше имя</label>
+                <label className="block font-semibold text-[#33261D] mb-1.5">Ваше имя</label>
                 <input
                   type="text"
                   required
                   placeholder="Елена"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full p-2.5 bg-white border border-[#E8E0D5] rounded-xl focus:outline-none focus:border-[#E2A69B]"
+                  className="w-full px-3.5 py-2.5 min-h-[44px] bg-white border border-[#E8E0D5] rounded-xl text-base sm:text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B]"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-[#33261D] mb-1">Телефон</label>
+                <label className="block font-semibold text-[#33261D] mb-1.5">Телефон</label>
                 <input
                   type="tel"
                   required
                   placeholder="+992 (99) 000-00-00"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full p-2.5 bg-white border border-[#E8E0D5] rounded-xl focus:outline-none focus:border-[#E2A69B]"
+                  className="w-full px-3.5 py-2.5 min-h-[44px] bg-white border border-[#E8E0D5] rounded-xl text-base sm:text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B]"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-[#33261D] mb-1">Сообщение</label>
+                <label className="block font-semibold text-[#33261D] mb-1.5">Сообщение</label>
                 <textarea
                   rows={3}
                   placeholder="Какой размер посоветуете для ребенка 2 лет?..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="w-full p-2.5 bg-white border border-[#E8E0D5] rounded-xl focus:outline-none focus:border-[#E2A69B]"
+                  className="w-full px-3.5 py-2.5 min-h-[80px] bg-white border border-[#E8E0D5] rounded-xl text-base sm:text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B]"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3 bg-[#E2A69B] text-white font-bold rounded-xl hover:bg-[#C88B80] transition-colors"
+                className="w-full py-3 min-h-[46px] bg-[#E2A69B] text-white font-bold rounded-xl hover:bg-[#C88B80] active:scale-[0.98] transition-all cursor-pointer flex items-center justify-center"
               >
                 Отправить вопрос
               </button>

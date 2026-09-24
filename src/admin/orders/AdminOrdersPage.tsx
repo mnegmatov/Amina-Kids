@@ -121,19 +121,6 @@ export const AdminOrdersPage: React.FC = () => {
     }
   };
 
-  useBodyScrollLock(selectedOrder !== null);
-
-  useEffect(() => {
-    if (!selectedOrder) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setSelectedOrder(null);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedOrder]);
-
   return (
     <div className="min-h-screen bg-[#F7F1E5]">
       <header className="bg-white border-b border-[#E8E0D5]">
@@ -163,12 +150,12 @@ export const AdminOrdersPage: React.FC = () => {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Поиск по имени, телефону или ID..."
-            className="flex-1 px-4 py-3 min-h-[44px] rounded-xl border border-[#E8E0D5] bg-white text-sm text-[#33261D] outline-none focus:border-[#E2A69B]"
+            className="flex-1 px-4 py-3 min-h-[44px] rounded-xl border border-[#E8E0D5] bg-white text-base sm:text-sm text-[#33261D] outline-none focus:border-[#E2A69B]"
           />
           <select
             value={filter}
             onChange={(event) => setFilter(event.target.value as 'all' | OrderStatus)}
-            className="px-4 py-3 min-h-[44px] rounded-xl border border-[#E8E0D5] bg-white text-sm text-[#33261D] outline-none cursor-pointer"
+            className="px-4 py-3 min-h-[44px] rounded-xl border border-[#E8E0D5] bg-white text-base sm:text-sm text-[#33261D] outline-none cursor-pointer"
           >
             <option value="all">Все статусы</option>
             {ORDER_STATUS_OPTIONS.map((status) => (
@@ -306,7 +293,7 @@ export const AdminOrdersPage: React.FC = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'tween', duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-              className="w-full sm:max-w-xl bg-white sm:rounded-2xl shadow-2xl overflow-y-auto max-h-screen flex flex-col z-10"
+              className="w-full sm:max-w-xl bg-white sm:rounded-2xl shadow-2xl overflow-y-auto max-h-[100dvh] overscroll-contain flex flex-col z-10"
               onClick={(event) => event.stopPropagation()}
             >
               <div className="sticky top-0 z-10 bg-white border-b border-[#E8E0D5] px-5 py-4 flex items-center justify-between">

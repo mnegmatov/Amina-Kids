@@ -131,7 +131,7 @@ export const QuickBuyModal: React.FC<QuickBuyModalProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
-            className="relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl p-5 sm:p-6 border border-[#E8E0D5] max-h-[90vh] overflow-y-auto pb-safe z-10"
+            className="relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl p-5 sm:p-6 border border-[#E8E0D5] max-h-[90dvh] overflow-y-auto overscroll-contain pb-safe z-10"
             onClick={(e) => e.stopPropagation()}
           >
         {/* Mobile handle indicator */}
@@ -196,7 +196,7 @@ export const QuickBuyModal: React.FC<QuickBuyModalProps> = ({
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   disabled={submitting}
-                  className="w-full pl-9 pr-3 py-2.5 min-h-[44px] bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B] disabled:opacity-60"
+                  className="w-full pl-9 pr-3 py-2.5 min-h-[46px] bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl text-base sm:text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B] disabled:opacity-60"
                 />
               </div>
             </div>
@@ -214,7 +214,7 @@ export const QuickBuyModal: React.FC<QuickBuyModalProps> = ({
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   disabled={submitting}
-                  className="w-full pl-9 pr-3 py-2.5 min-h-[44px] bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B] disabled:opacity-60"
+                  className="w-full pl-9 pr-3 py-2.5 min-h-[46px] bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl text-base sm:text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B] disabled:opacity-60"
                 />
               </div>
             </div>
@@ -230,7 +230,7 @@ export const QuickBuyModal: React.FC<QuickBuyModalProps> = ({
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   disabled={submitting}
-                  className="w-full pl-9 pr-3 py-2.5 min-h-[44px] bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B] disabled:opacity-60"
+                  className="w-full pl-9 pr-3 py-2.5 min-h-[46px] bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl text-base sm:text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B] disabled:opacity-60"
                 />
               </div>
             </div>

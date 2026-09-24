@@ -225,7 +225,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                       placeholder="Анна Рахимова"
                       value={formData.fullName}
                       onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                      className="w-full p-3 min-h-[44px] bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B]"
+                      className="w-full p-3 min-h-[46px] bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl text-base sm:text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B]"
                     />
                   </div>
 
@@ -239,7 +239,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                       placeholder="+992 (99) 000-00-00"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full p-3 min-h-[44px] bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B]"
+                      className="w-full p-3 min-h-[46px] bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl text-base sm:text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B]"
                     />
                   </div>
                 </div>
@@ -254,7 +254,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                     placeholder="anna@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full p-3 min-h-[44px] bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B]"
+                    className="w-full p-3 min-h-[46px] bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl text-base sm:text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B]"
                   />
                 </div>
 
@@ -336,7 +336,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                     placeholder="г. Душанбе, ул. Рудаки, д. 12, кв. 34"
                     value={formData.address}
                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                    className="w-full p-3 min-h-[44px] bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl text-xs focus:outline-none focus:border-[#E2A69B]"
+                    className="w-full p-3 min-h-[46px] bg-[#FAF6F0] border border-[#E8E0D5] rounded-xl text-base sm:text-xs focus:outline-none focus:border-[#E2A69B]"
                   />
                 </div>
 
@@ -344,7 +344,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                   <button
                     type="button"
                     onClick={() => setStep(1)}
-                    className="min-h-[44px] px-5 py-2.5 border border-[#E8E0D5] text-xs font-bold text-[#7A695D] rounded-xl hover:bg-[#FAF6F0] hover:text-[#33261D] transition-colors cursor-pointer flex items-center gap-1.5"
+                    className="min-h-[48px] px-5 py-2.5 border border-[#E8E0D5] text-xs font-bold text-[#7A695D] rounded-2xl hover:bg-[#FAF6F0] hover:text-[#33261D] transition-colors cursor-pointer flex items-center gap-1.5"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" />
                     <span>Назад</span>
@@ -352,7 +352,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                   <button
                     type="button"
                     onClick={() => setStep(3)}
-                    className="min-h-[44px] px-6 py-2.5 bg-[#E2A69B] text-white text-xs font-bold uppercase tracking-wider rounded-xl hover:bg-[#C88B80] active:scale-[0.99] transition-all cursor-pointer flex items-center gap-1.5"
+                    className="min-h-[48px] px-6 py-2.5 bg-[#E2A69B] text-white text-xs font-bold uppercase tracking-wider rounded-2xl hover:bg-[#C88B80] active:scale-[0.98] transition-all cursor-pointer flex items-center gap-1.5"
                   >
                     <span>Далее к оплате</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -399,7 +399,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                       type="button"
                       onClick={() => setStep(2)}
                       disabled={submitting}
-                      className="min-h-[46px] px-5 py-2.5 border border-[#E8E0D5] text-xs font-bold text-[#7A695D] rounded-xl hover:bg-[#FAF6F0] hover:text-[#33261D] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1.5"
+                      className="min-h-[48px] px-5 py-2.5 border border-[#E8E0D5] text-xs font-bold text-[#7A695D] rounded-2xl hover:bg-[#FAF6F0] hover:text-[#33261D] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center gap-1.5"
                     >
                       <ArrowLeft className="w-3.5 h-3.5" />
                       <span>Назад</span>
@@ -407,7 +407,7 @@ export const CheckoutPage: React.FC<CheckoutPageProps> = ({
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="flex-1 min-h-[48px] py-3.5 px-6 bg-[#4A3A0B] hover:bg-[#2C2008] active:scale-[0.99] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-md transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+                      className="flex-1 min-h-[48px] py-3.5 px-6 bg-[#4A3A0B] hover:bg-[#2C2008] active:scale-[0.98] text-white text-xs font-bold uppercase tracking-wider rounded-2xl shadow-md hover:shadow-lg transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {submitting ? (
                         <>

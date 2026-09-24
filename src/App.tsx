@@ -181,25 +181,6 @@ export default function App() {
     }
   }, [wishlistIds]);
 
-  // Lock background scroll while overlay is open
-  useEffect(() => {
-    const anyOverlayOpen =
-      !!quickViewProduct ||
-      !!quickBuyItem ||
-      sizeChartOpen ||
-      cartDrawerOpen;
-
-    document.body.style.overflow = anyOverlayOpen ? 'hidden' : '';
-
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [
-    quickViewProduct,
-    quickBuyItem,
-    sizeChartOpen,
-    cartDrawerOpen,
-  ]);
 
   // Toast Helpers
   const addToast = (

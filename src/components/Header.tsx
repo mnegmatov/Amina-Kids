@@ -254,7 +254,7 @@ export const Header: React.FC<HeaderProps> = ({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: -10 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden border border-[#E8E0D5] flex flex-col max-h-[85vh] z-10"
+              className="relative bg-white w-full max-w-2xl rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border border-[#E8E0D5] flex flex-col max-h-[85dvh] z-10"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Search Input Bar */}
@@ -266,7 +266,7 @@ export const Header: React.FC<HeaderProps> = ({
                   placeholder="Поиск по названию или категории..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full text-sm sm:text-base text-[#4A3A0B] bg-transparent focus:outline-none placeholder-[#7A695D]/60"
+                  className="w-full text-base text-[#4A3A0B] bg-transparent focus:outline-none placeholder-[#7A695D]/60 min-h-[44px]"
                 />
                 {searchQuery && (
                   <button
@@ -377,7 +377,7 @@ export const Header: React.FC<HeaderProps> = ({
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ type: 'tween', duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-                className="w-[85vw] max-w-xs sm:max-w-sm bg-white shadow-2xl flex flex-col justify-between p-5 sm:p-6 overflow-y-auto border-r border-[#E8E0D5] h-full pb-safe z-10"
+                className="w-[85vw] max-w-xs sm:max-w-sm bg-white shadow-2xl flex flex-col justify-between p-5 sm:p-6 overflow-y-auto overscroll-contain border-r border-[#E8E0D5] h-full pb-safe z-10"
               >
                 <div>
                   {/* Drawer Header */}

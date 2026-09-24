@@ -176,7 +176,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
     .slice(0, 4);
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-8 sm:space-y-12">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-8 sm:space-y-12 pb-28 sm:pb-20 lg:pb-10">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs text-[#7A695D] overflow-x-auto pb-1" aria-label="Хлебные крошки">
         <button onClick={onNavigateToCatalog} className="hover:text-[#4A3A0B] transition-colors cursor-pointer shrink-0">
@@ -189,7 +189,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       </nav>
 
       {/* Main Product Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-start pb-20 lg:pb-0">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-start">
         {/* Gallery Section */}
         <div className="space-y-3 sm:space-y-4">
           <div
@@ -238,19 +238,19 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 {activeImageIndex > 0 && (
                   <button
                     onClick={() => setActiveImageIndex((prev) => prev - 1)}
-                    className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 text-[#4A3A0B] flex items-center justify-center shadow-md hover:bg-white transition-all cursor-pointer z-10"
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-white/85 text-[#4A3A0B] flex items-center justify-center shadow-md hover:bg-white active:scale-90 transition-all cursor-pointer z-10"
                     aria-label="Предыдущее фото"
                   >
-                    <ChevronLeft className="w-4 h-4" />
+                    <ChevronLeft className="w-5 h-5" />
                   </button>
                 )}
                 {activeImageIndex < product.images.length - 1 && (
                   <button
                     onClick={() => setActiveImageIndex((prev) => prev + 1)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/85 text-[#4A3A0B] flex items-center justify-center shadow-md hover:bg-white transition-all cursor-pointer z-10"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 w-10 h-10 min-w-[40px] min-h-[40px] rounded-full bg-white/85 text-[#4A3A0B] flex items-center justify-center shadow-md hover:bg-white active:scale-90 transition-all cursor-pointer z-10"
                     aria-label="Следующее фото"
                   >
-                    <ChevronRight className="w-4 h-4" />
+                    <ChevronRight className="w-5 h-5" />
                   </button>
                 )}
               </>
@@ -375,7 +375,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               <span>Размер (Рост ребенка, см): <strong className="font-bold">{selectedSize}</strong></span>
               <button
                 onClick={onOpenSizeChart}
-                className="text-[#E2A69B] hover:text-[#C88B80] font-bold flex items-center gap-1 cursor-pointer transition-colors p-1"
+                className="text-[#E2A69B] hover:text-[#C88B80] font-bold flex items-center gap-1 cursor-pointer transition-colors py-1.5 px-2 -mr-1 rounded-lg hover:bg-[#F8EBE8]/60 min-h-[36px]"
               >
                 <Ruler className="w-3.5 h-3.5" />
                 Таблица размеров
@@ -407,7 +407,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <div className="flex items-center border border-[#E8E0D5] rounded-xl bg-[#FAF6F0] overflow-hidden">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="min-w-[40px] min-h-[40px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#4A3A0B] active:bg-[#F0EBE1] cursor-pointer transition-colors"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#4A3A0B] active:bg-[#F0EBE1] cursor-pointer transition-colors"
                 aria-label="Уменьшить количество"
               >
                 -
@@ -428,7 +428,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
               <button
                 onClick={() => setQuantity(Math.min(100, quantity + 1))}
-                className="min-w-[40px] min-h-[40px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#4A3A0B] active:bg-[#F0EBE1] cursor-pointer transition-colors"
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#4A3A0B] active:bg-[#F0EBE1] cursor-pointer transition-colors"
                 aria-label="Увеличить количество"
               >
                 +
@@ -499,7 +499,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
       {/* Details Tabs */}
       <div className="bg-white rounded-3xl border border-[#E8E0D5] p-5 sm:p-8 shadow-sm">
-        <div className="flex border-b border-[#E8E0D5] gap-4 sm:gap-6 overflow-x-auto pb-2 scrollbar-none">
+        <div className="flex bg-[#FAF6F0] p-1.5 rounded-2xl border border-[#E8E0D5] gap-1 overflow-x-auto scrollbar-none mb-6">
           {[
             { id: 'desc', label: 'Описание' },
             { id: 'composition', label: 'Состав и уход' },
@@ -509,21 +509,18 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`pb-3 text-xs font-bold transition-all relative shrink-0 cursor-pointer ${
+              className={`py-2 px-3.5 sm:px-4 text-xs font-bold transition-all rounded-xl shrink-0 cursor-pointer ${
                 activeTab === tab.id
-                  ? 'text-[#E2A69B]'
+                  ? 'bg-white text-[#4A3A0B] shadow-xs'
                   : 'text-[#7A695D] hover:text-[#4A3A0B]'
               }`}
             >
               {tab.label}
-              {activeTab === tab.id && (
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#E2A69B] rounded-full" />
-              )}
             </button>
           ))}
         </div>
 
-        <div className="pt-6 text-xs text-[#4A3A0B] leading-relaxed">
+        <div className="text-xs text-[#4A3A0B] leading-relaxed">
           {activeTab === 'desc' && (
             <div key="desc" className="space-y-4 max-w-2xl animate-fade-in">
               <p className="text-xs sm:text-sm text-[#4A3A0B] leading-relaxed">{product.description}</p>
@@ -614,7 +611,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                         value={newReviewAuthor}
                         onChange={(e) => setNewReviewAuthor(e.target.value)}
                         disabled={reviewSubmitting}
-                        className="w-full p-2.5 bg-white border border-[#E8E0D5] rounded-xl text-xs focus:outline-none focus:border-[#E2A69B] disabled:opacity-60"
+                        className="w-full p-3 min-h-[44px] bg-white border border-[#E8E0D5] rounded-xl text-base sm:text-xs focus:outline-none focus:border-[#E2A69B] disabled:opacity-60"
                       />
                     </div>
 
@@ -624,7 +621,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                         value={newReviewRating}
                         onChange={(e) => setNewReviewRating(Number(e.target.value))}
                         disabled={reviewSubmitting}
-                        className="p-2 bg-white border border-[#E8E0D5] rounded-xl text-xs font-semibold disabled:opacity-60"
+                        className="w-full sm:w-auto p-2.5 min-h-[44px] bg-white border border-[#E8E0D5] rounded-xl text-base sm:text-xs font-semibold disabled:opacity-60 cursor-pointer"
                       >
                         <option value={5}>5 звезд - Отлично</option>
                         <option value={4}>4 звезды - Хорошо</option>
@@ -643,7 +640,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                         value={newReviewComment}
                         onChange={(e) => setNewReviewComment(e.target.value)}
                         disabled={reviewSubmitting}
-                        className="w-full p-2.5 bg-white border border-[#E8E0D5] rounded-xl text-xs focus:outline-none focus:border-[#E2A69B] disabled:opacity-60"
+                        className="w-full p-3 bg-white border border-[#E8E0D5] rounded-xl text-base sm:text-xs focus:outline-none focus:border-[#E2A69B] disabled:opacity-60"
                       />
                     </div>
 

@@ -43,7 +43,7 @@ export const WishlistPage: React.FC<WishlistPageProps> = ({
           <div className="pt-2">
             <button
               onClick={onNavigateToCatalog}
-              className="min-h-[46px] px-7 py-3 bg-[#E2A69B] hover:bg-[#C88B80] active:scale-[0.99] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-sm transition-all inline-flex items-center gap-2 cursor-pointer"
+              className="min-h-[48px] px-8 py-3.5 bg-[#4A3A0B] hover:bg-[#33261D] active:scale-[0.98] text-[#F7F1E5] text-xs font-bold uppercase tracking-wider rounded-2xl shadow-md hover:shadow-lg transition-all inline-flex items-center gap-2 cursor-pointer"
             >
               <span>Перейти в каталог</span>
               <ArrowRight className="w-4 h-4" />

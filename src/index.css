@@ -38,7 +38,9 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
+    min-height: 100dvh;
     padding-bottom: env(safe-area-inset-bottom, 0px);
+    touch-action: manipulation;
   }
 
   h1, h2, h3, .font-serif {
@@ -118,6 +120,32 @@
 }
 .pt-safe {
   padding-top: max(1rem, env(safe-area-inset-top, 1rem));
+}
+.pl-safe {
+  padding-left: max(0.5rem, env(safe-area-inset-left, 0.5rem));
+}
+.pr-safe {
+  padding-right: max(0.5rem, env(safe-area-inset-right, 0.5rem));
+}
+
+/* Prevent scroll-chaining from modal/sheet back to page */
+.overscroll-contain {
+  overscroll-behavior-y: contain;
+}
+
+/* iOS Safari font-size zoom prevention: inputs must be >= 16px on mobile */
+@media screen and (max-width: 640px) {
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"],
+  input[type="search"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
 }
 
 /* Animations */

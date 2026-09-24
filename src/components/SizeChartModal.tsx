@@ -78,9 +78,12 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
-            className="relative w-full max-w-2xl bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden max-h-[90vh] sm:max-h-[85vh] flex flex-col border-t sm:border border-[#E8E0D5] z-10"
+            className="relative w-full max-w-2xl bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden max-h-[90dvh] sm:max-h-[85vh] overscroll-contain flex flex-col border-t sm:border border-[#E8E0D5] z-10"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Mobile handle indicator */}
+            <div className="w-12 h-1.5 bg-[#E8E0D5] rounded-full mx-auto mt-2.5 -mb-1 sm:hidden shrink-0" />
+
             {/* Header */}
             <div className="flex items-center justify-between p-4 sm:p-5 border-b border-[#E8E0D5] bg-[#FAF6F0]">
               <div className="flex items-center gap-3">
@@ -104,7 +107,7 @@ export const SizeChartModal: React.FC<SizeChartModalProps> = ({ isOpen, onClose 
             </div>
 
             {/* Content */}
-            <div className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-4">
+            <div className="p-4 sm:p-6 overflow-y-auto overscroll-contain flex-1 space-y-4 pb-safe">
               {/* Category Tabs & View Switcher */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                 <div className="flex bg-[#FAF6F0] p-1 rounded-xl border border-[#E8E0D5] w-full sm:w-auto">

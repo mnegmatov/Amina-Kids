@@ -133,19 +133,23 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
           />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-4 sm:pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex">
         <motion.div
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
           transition={{ type: 'tween', duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-          className="w-screen max-w-md bg-white shadow-2xl flex flex-col border-l border-[#E8E0D5] h-full"
+          className="w-full max-w-md bg-white shadow-2xl flex flex-col border-l border-[#E8E0D5] h-full"
         >
           {/* Header */}
-          <div className="p-4 sm:p-5 bg-[#F7F1E5] border-b border-[#E8E0D5] flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-2">
-              <ShoppingBag className="w-5 h-5 text-[#E2A69B]" />
-              <h3 className="text-base font-bold text-[#33261D]">Корзина ({cartItems.length})</h3>
+          <div className="p-4 sm:p-5 bg-white border-b border-[#E8E0D5] flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-[#F8EBE8] flex items-center justify-center text-[#E2A69B]">
+                <ShoppingBag className="w-4 h-4" />
+              </div>
+              <h3 className="text-base font-bold font-serif text-[#33261D] flex items-center">
+                Корзина <span className="text-[11px] font-sans font-bold text-[#E2A69B] bg-[#F8EBE8] px-2 py-0.5 rounded-full ml-2">{cartItems.length}</span>
+              </h3>
             </div>
             <button
               onClick={onClose}
@@ -277,7 +281,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                         <button
                           onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
                           aria-label="Уменьшить количество"
-                          className="min-w-[40px] min-h-[40px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#33261D] active:bg-[#FAF6F0] rounded-l-xl transition-colors cursor-pointer"
+                          className="min-w-[44px] min-h-[44px] flex items-center justify-center text-sm font-bold text-[#7A695D] hover:text-[#33261D] active:bg-[#FAF6F0] rounded-l-xl transition-colors cursor-pointer"
                         >
                           -
                         </button>
@@ -286,7 +290,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
                           onClick={() => onUpdateQuantity(item.id, Math.min(item.quantity + 1, maxQty))}
                           disabled={atMax || stock?.isOutOfStock}
                           aria-label="Увеличить количество"
-                          className={`min-w-[40px] min-h-[40px] flex items-center justify-center text-sm font-bold rounded-r-xl transition-colors ${
+                          className={`min-w-[44px] min-h-[44px] flex items-center justify-center text-sm font-bold rounded-r-xl transition-colors ${
                             atMax || stock?.isOutOfStock
                               ? 'text-gray-300 cursor-not-allowed'
                               : 'text-[#7A695D] hover:text-[#33261D] active:bg-[#FAF6F0] cursor-pointer'
@@ -316,20 +320,20 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <form onSubmit={handleApplyPromo} className="space-y-1">
                 <div className="flex gap-2">
                   <div className="relative flex-1">
-                    <Tag className="w-3.5 h-3.5 text-[#7A695D] absolute left-3 top-1/2 -translate-y-1/2" />
+                    <Tag className="w-3.5 h-3.5 text-[#7A695D] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type="text"
                       placeholder="Промокод (например FIRST10)"
                       value={promoInput}
                       onChange={(e) => setPromoInput(e.target.value)}
                       aria-label="Промокод для скидки"
-                      className="w-full pl-8 pr-3 py-2.5 bg-white border border-[#E8E0D5] rounded-xl text-xs text-[#33261D] focus:outline-none focus:border-[#E2A69B]"
+                      className="w-full pl-8 pr-3 py-2.5 bg-white border border-[#E8E0D5] rounded-xl text-base sm:text-xs min-h-[44px] text-[#33261D] focus:outline-none focus:border-[#E2A69B]"
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={promoChecking || !promoInput.trim()}
-                    className="min-h-[44px] px-4 py-2 bg-[#4A3A0B] text-white text-xs font-semibold rounded-xl hover:bg-[#2C2008] active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                    className="min-h-[44px] px-4 py-2 bg-[#4A3A0B] text-white text-xs font-semibold rounded-xl hover:bg-[#2C2008] active:scale-[0.97] transition-all disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                   >
                     {promoChecking ? 'Проверка...' : 'Применить'}
                   </button>
@@ -394,7 +398,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
               <button
                 onClick={handleProceedToCheckout}
                 disabled={stockLoading || hasStockIssues}
-                className="w-full min-h-[48px] py-3.5 bg-[#E2A69B] hover:bg-[#C88B80] active:scale-[0.99] text-white text-xs font-bold uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#E2A69B] cursor-pointer"
+                className="w-full min-h-[48px] py-3.5 bg-[#E2A69B] hover:bg-[#C88B80] active:scale-[0.99] text-white text-xs font-bold uppercase tracking-wider rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#E2A69B] cursor-pointer"
               >
                 <span>
                   {stockLoading
