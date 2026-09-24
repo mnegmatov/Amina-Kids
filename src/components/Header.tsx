@@ -1,13 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PageType, Product } from '../types';
-import { ShoppingBag, Heart, Search, Menu, X, Sparkles, Phone, ChevronRight, MessageCircle } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { PageType, Product, ProductCategory } from '../types';
+import {
+  ShoppingBag,
+  Heart,
+  Search,
+  Menu,
+  X,
+  Sparkles,
+  Phone,
+  ChevronRight,
+  MessageCircle,
+  Layers,
+  Sparkle,
+} from 'lucide-react';
 import { formatPrice } from '../utils/format';
 import { useBodyScrollLock } from '../utils/useBodyScrollLock';
 import { AnimatePresence, motion } from 'motion/react';
 
 interface HeaderProps {
   activePage: PageType;
-  onNavigate: (page: PageType) => void;
+  onNavigate: (page: PageType, category?: ProductCategory) => void;
   cartCount: number;
   cartTotal: number;
   wishlistCount: number;
@@ -58,6 +71,17 @@ export const Header: React.FC<HeaderProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [searchOpen, mobileMenuOpen]);
 
+  // Close mobile drawer on desktop resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024 && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [mobileMenuOpen]);
+
   const filteredProducts = searchQuery.trim()
     ? products.filter(
         (p) =>
@@ -83,6 +107,13 @@ export const Header: React.FC<HeaderProps> = ({
     { label: 'Контакты', page: 'contacts' },
   ];
 
+  const categories: { label: string; category: ProductCategory; tag: string }[] = [
+    { label: 'Девочкам', category: 'girls', tag: 'Платья, костюмы, юбки' },
+    { label: 'Мальчикам', category: 'boys', tag: 'Рубашки, шорты, комплекты' },
+    { label: 'Малышам (0–24 мес)', category: 'babies', tag: 'Боди, песочники, ромперы' },
+    { label: 'Аксессуары', category: 'accessories', tag: 'Панамки, слюнявчики, пледы' },
+  ];
+
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-nav border-b border-[#E8E0D5]/80 shadow-[0_2px_12px_rgba(74,58,11,0.03)] transition-all">
       {/* Announcement Top Bar */}
@@ -100,11 +131,33 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="flex items-center lg:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="min-w-[44px] min-h-[44px] flex items-center justify-center -ml-2 text-[#4A3A0B] hover:text-[#E2A69B] active:scale-95 transition-all"
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center -ml-2 text-[#4A3A0B] hover:text-[#E2A69B] active:scale-90 transition-transform cursor-pointer rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E2A69B]"
               aria-label={mobileMenuOpen ? 'Закрыть меню' : 'Открыть главное меню'}
               aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              <AnimatePresence mode="wait" initial={false}>
+                {mobileMenuOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ opacity: 0, rotate: -90, scale: 0.85 }}
+                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                    exit={{ opacity: 0, rotate: 90, scale: 0.85 }}
+                    transition={{ duration: 0.16, ease: [0.32, 0.72, 0, 1] }}
+                  >
+                    <X className="w-6 h-6" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ opacity: 0, rotate: 90, scale: 0.85 }}
+                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                    exit={{ opacity: 0, rotate: -90, scale: 0.85 }}
+                    transition={{ duration: 0.16, ease: [0.32, 0.72, 0, 1] }}
+                  >
+                    <Menu className="w-6 h-6" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </button>
           </div>
 
@@ -229,252 +282,349 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </div>
 
-      {/* Fullscreen Search Modal */}
-      <AnimatePresence>
-        {searchOpen && (
-          <div
-            className="fixed inset-0 z-50 flex items-start justify-center pt-3 sm:pt-16 px-3 sm:px-4"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Поиск по каталогу"
-          >
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="absolute inset-0 bg-[#2C2008]/60 backdrop-blur-sm"
-              onClick={() => {
-                setSearchOpen(false);
-                setSearchQuery('');
-              }}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, y: -10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: -10 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="relative bg-white w-full max-w-2xl rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border border-[#E8E0D5] flex flex-col max-h-[85dvh] z-10"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Search Input Bar */}
-              <div className="p-3.5 sm:p-4 border-b border-[#E8E0D5] flex items-center gap-3 bg-[#FDFBF7]">
-                <Search className="w-5 h-5 text-[#E2A69B] shrink-0" aria-hidden="true" />
-                <input
-                  ref={searchInputRef}
-                  type="search"
-                  placeholder="Поиск по названию или категории..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full text-base text-[#4A3A0B] bg-transparent focus:outline-none placeholder-[#7A695D]/60 min-h-[44px]"
-                />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery('')}
-                    className="min-w-[36px] min-h-[36px] flex items-center justify-center text-[#7A695D] hover:text-[#4A3A0B] text-xs font-semibold rounded-lg cursor-pointer"
-                    aria-label="Очистить поисковый запрос"
-                  >
-                    Очистить
-                  </button>
-                )}
-                <button
-                  type="button"
+      {/* Fullscreen Search Modal - Mounted directly to body via createPortal to prevent containing-block / backdrop-filter issues */}
+      {typeof document !== 'undefined' &&
+        createPortal(
+          <AnimatePresence>
+            {searchOpen && (
+              <div
+                className="fixed inset-0 z-50 flex items-start justify-center pt-3 sm:pt-16 px-3 sm:px-4"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Поиск по каталогу"
+              >
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="fixed inset-0 bg-[#2C2008]/60 backdrop-blur-sm"
                   onClick={() => {
                     setSearchOpen(false);
                     setSearchQuery('');
                   }}
-                  className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#7A695D] hover:text-[#4A3A0B] hover:bg-[#F8EBE8] rounded-xl transition-colors shrink-0 -mr-1 cursor-pointer"
-                  aria-label="Закрыть поиск"
+                />
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96, y: -10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.96, y: -10 }}
+                  transition={{ duration: 0.2, ease: 'easeOut' }}
+                  className="relative bg-white w-full max-w-2xl rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border border-[#E8E0D5] flex flex-col max-h-[85dvh] z-10"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              {/* Quick Suggestions when empty */}
-              {searchQuery.trim() === '' && (
-                <div className="p-4 sm:p-6 bg-[#FAF6F0]/50">
-                  <p className="text-xs font-bold text-[#7A695D] uppercase tracking-wider mb-3">
-                    Популярные запросы:
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {popularSearches.map((tag) => (
+                  {/* Search Input Bar */}
+                  <div className="p-3.5 sm:p-4 border-b border-[#E8E0D5] flex items-center gap-3 bg-[#FDFBF7]">
+                    <Search className="w-5 h-5 text-[#E2A69B] shrink-0" aria-hidden="true" />
+                    <input
+                      ref={searchInputRef}
+                      type="search"
+                      placeholder="Поиск по названию или категории..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full text-base text-[#4A3A0B] bg-transparent focus:outline-none placeholder-[#7A695D]/60 min-h-[44px]"
+                    />
+                    {searchQuery && (
                       <button
-                        key={tag}
                         type="button"
-                        onClick={() => setSearchQuery(tag)}
-                        className="text-xs px-3 py-1.5 rounded-full bg-white border border-[#E8E0D5] text-[#4A3A0B] hover:border-[#E2A69B] hover:text-[#E2A69B] transition-colors cursor-pointer"
+                        onClick={() => setSearchQuery('')}
+                        className="min-w-[36px] min-h-[36px] flex items-center justify-center text-[#7A695D] hover:text-[#4A3A0B] text-xs font-semibold rounded-lg cursor-pointer"
+                        aria-label="Очистить поисковый запрос"
                       >
-                        {tag}
+                        Очистить
                       </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Results List */}
-              <div className="overflow-y-auto p-3 sm:p-4 divide-y divide-[#E8E0D5]/60 flex-1">
-                {searchQuery.trim() !== '' && filteredProducts.length === 0 ? (
-                  <div className="text-center py-10 px-4 text-[#7A695D]">
-                    <p className="text-sm font-semibold text-[#4A3A0B]">Ничего не найдено</p>
-                    <p className="text-xs mt-1">Попробуйте изменить запрос или проверить категорию</p>
-                  </div>
-                ) : (
-                  filteredProducts.map((product) => (
-                    <div
-                      key={product.id}
-                      onClick={() => handleProductSearchClick(product)}
-                      className="py-3 px-2.5 sm:px-3 flex items-center justify-between hover:bg-[#F8EBE8]/40 rounded-xl cursor-pointer transition-colors group"
-                      role="button"
-                      tabIndex={0}
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSearchOpen(false);
+                        setSearchQuery('');
+                      }}
+                      className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#7A695D] hover:text-[#4A3A0B] hover:bg-[#F8EBE8] rounded-xl transition-colors shrink-0 -mr-1 cursor-pointer"
+                      aria-label="Закрыть поиск"
                     >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <img
-                          src={product.images[0]}
-                          alt={product.name}
-                          className="w-12 h-14 object-cover rounded-lg border border-[#E8E0D5] bg-[#F8EBE8] shrink-0"
-                          loading="lazy"
-                        />
-                        <div className="min-w-0">
-                          <h4 className="text-xs sm:text-sm font-bold text-[#4A3A0B] group-hover:text-[#E2A69B] transition-colors truncate">
-                            {product.name}
-                          </h4>
-                          <span className="text-[11px] text-[#7A695D]">{product.subcategory}</span>
-                        </div>
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Quick Suggestions when empty */}
+                  {searchQuery.trim() === '' && (
+                    <div className="p-4 sm:p-6 bg-[#FAF6F0]/50">
+                      <p className="text-xs font-bold text-[#7A695D] uppercase tracking-wider mb-3">
+                        Популярные запросы:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {popularSearches.map((tag) => (
+                          <button
+                            key={tag}
+                            type="button"
+                            onClick={() => setSearchQuery(tag)}
+                            className="text-xs px-3 py-1.5 rounded-full bg-white border border-[#E8E0D5] text-[#4A3A0B] hover:border-[#E2A69B] hover:text-[#E2A69B] transition-colors cursor-pointer"
+                          >
+                            {tag}
+                          </button>
+                        ))}
                       </div>
-                      <div className="text-right shrink-0 ml-3">
-                        <span className="text-xs sm:text-sm font-extrabold text-[#4A3A0B] block">
-                          {formatPrice(product.price)} с.
+                    </div>
+                  )}
+
+                  {/* Results List */}
+                  <div className="overflow-y-auto p-3 sm:p-4 divide-y divide-[#E8E0D5]/60 flex-1">
+                    {searchQuery.trim() !== '' && filteredProducts.length === 0 ? (
+                      <div className="text-center py-10 px-4 text-[#7A695D]">
+                        <p className="text-sm font-semibold text-[#4A3A0B]">Ничего не найдено</p>
+                        <p className="text-xs mt-1">Попробуйте изменить запрос или проверить категорию</p>
+                      </div>
+                    ) : (
+                      filteredProducts.map((product) => (
+                        <div
+                          key={product.id}
+                          onClick={() => handleProductSearchClick(product)}
+                          className="py-3 px-2.5 sm:px-3 flex items-center justify-between hover:bg-[#F8EBE8]/40 rounded-xl cursor-pointer transition-colors group"
+                          role="button"
+                          tabIndex={0}
+                        >
+                          <div className="flex items-center gap-3 min-w-0">
+                            <img
+                              src={product.images[0]}
+                              alt={product.name}
+                              className="w-12 h-14 object-cover rounded-lg border border-[#E8E0D5] bg-[#F8EBE8] shrink-0"
+                              loading="lazy"
+                            />
+                            <div className="min-w-0">
+                              <h4 className="text-xs sm:text-sm font-bold text-[#4A3A0B] group-hover:text-[#E2A69B] transition-colors truncate">
+                                {product.name}
+                              </h4>
+                              <span className="text-[11px] text-[#7A695D]">{product.subcategory}</span>
+                            </div>
+                          </div>
+                          <div className="text-right shrink-0 ml-3">
+                            <span className="text-xs sm:text-sm font-extrabold text-[#4A3A0B] block">
+                              {formatPrice(product.price)} с.
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
+
+      {/* Mobile Navigation Drawer - Mounted directly to body via createPortal to avoid header stacking context / backdrop-filter containing block */}
+      {typeof document !== 'undefined' &&
+        createPortal(
+          <AnimatePresence>
+            {mobileMenuOpen && (
+              <div
+                className="fixed inset-0 z-50 lg:hidden"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Главное меню навигации"
+              >
+                {/* Full Viewport Backdrop */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.22, ease: 'easeOut' }}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="fixed inset-0 bg-[#2C2008]/60 backdrop-blur-xs cursor-pointer"
+                  aria-hidden="true"
+                />
+
+                {/* Drawer Panel */}
+                <motion.aside
+                  initial={{ transform: 'translateX(-100%)' }}
+                  animate={{ transform: 'translateX(0%)' }}
+                  exit={{ transform: 'translateX(-100%)' }}
+                  transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
+                  className="fixed top-0 bottom-0 left-0 z-50 w-[85vw] max-w-[340px] bg-white shadow-2xl flex flex-col border-r border-[#E8E0D5] h-[100dvh] max-h-[100dvh] overflow-hidden select-none"
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label="Главное меню навигации"
+                >
+                  {/* Drawer Header (non-collapsible) */}
+                  <div className="shrink-0 flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-[#E8E0D5] bg-[#FDFBF7]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-[#F8EBE8] flex items-center justify-center text-[#E2A69B] border border-[#E2A69B]/40 font-serif font-bold text-base shadow-xs">
+                        A
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-serif font-bold text-sm tracking-wider text-[#4A3A0B] uppercase leading-tight">
+                          Amina <span className="text-[#E2A69B]">Kids</span>
+                        </span>
+                        <span className="text-[9px] uppercase tracking-widest text-[#7A695D] font-semibold">
+                          Премиальный муслин
                         </span>
                       </div>
                     </div>
-                  ))
-                )}
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* Mobile Navigation Drawer */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <div className="fixed inset-0 z-50 lg:hidden overflow-hidden" role="dialog" aria-modal="true" aria-label="Меню навигации">
-            {/* Full Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="absolute inset-0 bg-[#2C2008]/60 backdrop-blur-sm"
-            />
-
-            {/* Drawer Panel */}
-            <div className="fixed inset-y-0 left-0 max-w-full flex">
-              <motion.div
-                initial={{ x: '-100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '-100%' }}
-                transition={{ type: 'tween', duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-                className="w-[85vw] max-w-xs sm:max-w-sm bg-white shadow-2xl flex flex-col justify-between p-5 sm:p-6 overflow-y-auto overscroll-contain border-r border-[#E8E0D5] h-full pb-safe z-10"
-              >
-                <div>
-                  {/* Drawer Header */}
-                  <div className="flex items-center justify-between pb-4 mb-6 border-b border-[#E8E0D5]">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-[#F8EBE8] flex items-center justify-center text-[#E2A69B] border border-[#E2A69B]/40 font-serif font-bold text-base">
-                        A
-                      </div>
-                      <span className="font-serif font-bold text-base text-[#4A3A0B] tracking-wider">
-                        AMINA KIDS
-                      </span>
-                    </div>
                     <button
                       onClick={() => setMobileMenuOpen(false)}
-                      className="min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2 text-[#7A695D] hover:text-[#4A3A0B] rounded-xl cursor-pointer"
+                      className="min-w-[44px] min-h-[44px] flex items-center justify-center -mr-1 text-[#7A695D] hover:text-[#4A3A0B] hover:bg-[#F8EBE8]/60 active:scale-90 rounded-xl transition-all cursor-pointer"
                       aria-label="Закрыть меню"
                     >
                       <X className="w-5 h-5" />
                     </button>
                   </div>
 
-                  {/* Navigation Links */}
-                  <nav className="space-y-1.5" aria-label="Мобильная навигация">
-                    {navLinks.map((link) => (
+                  {/* Drawer Scrollable Body */}
+                  <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5 space-y-4">
+                    {/* Primary Navigation Links */}
+                    <nav className="space-y-1" aria-label="Основные страницы">
                       <button
-                        key={link.page}
                         onClick={() => {
-                          onNavigate(link.page);
+                          onNavigate('home');
                           setMobileMenuOpen(false);
                         }}
-                        className={`w-full flex items-center justify-between p-3.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                          activePage === link.page
-                            ? 'bg-[#F8EBE8] text-[#E2A69B] font-extrabold shadow-sm'
+                        className={`w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                          activePage === 'home'
+                            ? 'bg-[#F8EBE8] text-[#4A3A0B] font-extrabold shadow-xs'
                             : 'text-[#4A3A0B] hover:bg-[#FAF6F0] active:bg-[#F8EBE8]'
                         }`}
                       >
-                        <span>{link.label}</span>
-                        <ChevronRight className={`w-4 h-4 ${activePage === link.page ? 'text-[#E2A69B]' : 'text-[#7A695D]/50'}`} />
+                        <span>Главная</span>
+                        <ChevronRight className={`w-4 h-4 ${activePage === 'home' ? 'text-[#E2A69B]' : 'text-[#7A695D]/40'}`} />
                       </button>
-                    ))}
-                  </nav>
 
-                  {/* Quick Wishlist Link in Mobile Drawer */}
-                  <div className="mt-4 pt-4 border-t border-[#E8E0D5]/70">
-                    <button
-                      onClick={() => {
-                        onNavigate('wishlist');
-                        setMobileMenuOpen(false);
-                      }}
-                      className="w-full flex items-center justify-between p-3.5 rounded-xl bg-[#FAF6F0] hover:bg-[#F8EBE8] transition-colors text-[#4A3A0B] text-xs font-bold cursor-pointer"
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <Heart className="w-4 h-4 text-[#E2A69B]" />
-                        <span>Избранное</span>
-                      </div>
-                      {wishlistCount > 0 && (
-                        <span className="bg-[#E2A69B] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                          {wishlistCount}
+                      <button
+                        onClick={() => {
+                          onNavigate('catalog', 'all');
+                          setMobileMenuOpen(false);
+                        }}
+                        className={`w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                          activePage === 'catalog'
+                            ? 'bg-[#F8EBE8] text-[#4A3A0B] font-extrabold shadow-xs'
+                            : 'text-[#4A3A0B] hover:bg-[#FAF6F0] active:bg-[#F8EBE8]'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Layers className="w-4 h-4 text-[#E2A69B]" />
+                          <span>Каталог (все товары)</span>
+                        </div>
+                        <ChevronRight className={`w-4 h-4 ${activePage === 'catalog' ? 'text-[#E2A69B]' : 'text-[#7A695D]/40'}`} />
+                      </button>
+                    </nav>
+
+                    {/* Muslin Categories Card */}
+                    <div className="bg-[#FAF6F0] p-3 rounded-2xl border border-[#E8E0D5]/70 space-y-2">
+                      <div className="flex items-center justify-between px-1">
+                        <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#7A695D]">
+                          Категории муслина
                         </span>
-                      )}
-                    </button>
+                        <Sparkle className="w-3 h-3 text-[#E2A69B]" />
+                      </div>
+                      <div className="space-y-1">
+                        {categories.map((cat) => (
+                          <button
+                            key={cat.category}
+                            onClick={() => {
+                              onNavigate('catalog', cat.category);
+                              setMobileMenuOpen(false);
+                            }}
+                            className="w-full min-h-[44px] flex items-center justify-between px-3 py-2 rounded-xl bg-white hover:bg-[#F8EBE8]/60 border border-[#E8E0D5]/50 transition-all text-left group cursor-pointer active:scale-[0.98]"
+                          >
+                            <div className="min-w-0 pr-2">
+                              <span className="text-xs font-bold text-[#4A3A0B] group-hover:text-[#E2A69B] transition-colors block truncate">
+                                {cat.label}
+                              </span>
+                              <span className="text-[10px] text-[#7A695D]/80 block truncate">
+                                {cat.tag}
+                              </span>
+                            </div>
+                            <ChevronRight className="w-3.5 h-3.5 text-[#7A695D]/50 group-hover:text-[#E2A69B] group-hover:translate-x-0.5 transition-all shrink-0" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Wishlist & Info Pages */}
+                    <div className="space-y-1 pt-1">
+                      <button
+                        onClick={() => {
+                          onNavigate('wishlist');
+                          setMobileMenuOpen(false);
+                        }}
+                        className={`w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          activePage === 'wishlist'
+                            ? 'bg-[#F8EBE8] text-[#E2A69B] font-extrabold shadow-xs'
+                            : 'text-[#4A3A0B] hover:bg-[#FAF6F0] active:bg-[#F8EBE8]'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <Heart className={`w-4 h-4 ${wishlistCount > 0 ? 'text-[#E2A69B] fill-[#E2A69B]' : 'text-[#E2A69B]'}`} />
+                          <span>Избранное</span>
+                        </div>
+                        {wishlistCount > 0 && (
+                          <span className="bg-[#E2A69B] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs">
+                            {wishlistCount}
+                          </span>
+                        )}
+                      </button>
+
+                      {navLinks
+                        .filter((l) => l.page !== 'home' && l.page !== 'catalog')
+                        .map((link) => (
+                          <button
+                            key={link.page}
+                            onClick={() => {
+                              onNavigate(link.page);
+                              setMobileMenuOpen(false);
+                            }}
+                            className={`w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                              activePage === link.page
+                                ? 'bg-[#F8EBE8] text-[#E2A69B] font-extrabold shadow-xs'
+                                : 'text-[#4A3A0B] hover:bg-[#FAF6F0] active:bg-[#F8EBE8]'
+                            }`}
+                          >
+                            <span>{link.label}</span>
+                            <ChevronRight className={`w-4 h-4 ${activePage === link.page ? 'text-[#E2A69B]' : 'text-[#7A695D]/40'}`} />
+                          </button>
+                        ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Drawer Bottom Contacts */}
-                <div className="pt-6 border-t border-[#E8E0D5] space-y-3.5 text-xs text-[#7A695D]">
-                  <a
-                    href="tel:+992990123456"
-                    className="flex items-center gap-2.5 font-bold text-[#4A3A0B] hover:text-[#E2A69B] transition-colors min-h-[44px]"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-[#F8EBE8] flex items-center justify-center text-[#E2A69B]">
-                      <Phone className="w-4 h-4" />
-                    </div>
-                    <span>+992 (99) 012-34-56</span>
-                  </a>
+                  {/* Drawer Footer (non-collapsible, with safe-area padding) */}
+                  <div className="shrink-0 p-4 border-t border-[#E8E0D5] pb-safe bg-[#FAF6F0]/80 space-y-2.5">
+                    <a
+                      href="tel:+992990123456"
+                      className="flex items-center gap-2.5 font-bold text-xs text-[#4A3A0B] hover:text-[#E2A69B] transition-colors min-h-[44px] px-2 py-1 rounded-xl hover:bg-white/80"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-[#F8EBE8] flex items-center justify-center text-[#E2A69B] shrink-0">
+                        <Phone className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="block text-xs font-bold">+992 (99) 012-34-56</span>
+                        <span className="block text-[10px] font-normal text-[#7A695D]">Прямой звонок</span>
+                      </div>
+                    </a>
 
-                  <a
-                    href="https://wa.me/992990123456"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-2.5 font-semibold text-[#4A3A0B] hover:text-[#E2A69B] transition-colors min-h-[44px]"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-700">
-                      <MessageCircle className="w-4 h-4" />
-                    </div>
-                    <span>Написать в WhatsApp</span>
-                  </a>
+                    <a
+                      href="https://wa.me/992990123456"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-2.5 font-semibold text-xs text-[#4A3A0B] hover:text-emerald-700 transition-colors min-h-[44px] px-2 py-1 rounded-xl hover:bg-white/80"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-700 shrink-0">
+                        <MessageCircle className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="block text-xs font-bold text-emerald-800">Написать в WhatsApp</span>
+                        <span className="block text-[10px] font-normal text-[#7A695D]">Быстрая консультация</span>
+                      </div>
+                    </a>
 
-                  <p className="text-[11px] text-[#7A695D]/80 pt-1">
-                    Ежедневно с 09:00 до 21:00 (Душанбе)
-                  </p>
-                </div>
-              </motion.div>
-            </div>
-          </div>
+                    <p className="text-[10px] text-[#7A695D]/80 pt-1 text-center border-t border-[#E8E0D5]/50">
+                      Ежедневно с 09:00 до 21:00 • Душанбе
+                    </p>
+                  </div>
+                </motion.aside>
+              </div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </header>
   );
 };
