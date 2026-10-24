@@ -269,11 +269,14 @@ begin
       )
       returning id into v_customer_id;
     else
+      -- Security: prevent unverified checkout callers from overwriting an existing customer's
+      -- name, email, city, or address just by submitting their phone number.
+      -- Order-specific recipient info is always recorded in `public.orders`.
+      -- Customer records are only backfilled if existing fields are empty (NULL or blank).
       update public.customers
-      set full_name = trim(p_full_name),
-          email = nullif(trim(coalesce(p_email, '')), ''),
-          city = nullif(trim(coalesce(p_city, '')), ''),
-          address = nullif(trim(coalesce(p_address, '')), '')
+      set email = coalesce(nullif(trim(email), ''), nullif(trim(coalesce(p_email, '')), '')),
+          city = coalesce(nullif(trim(city), ''), nullif(trim(coalesce(p_city, '')), '')),
+          address = coalesce(nullif(trim(address), ''), nullif(trim(coalesce(p_address, '')), ''))
       where id = v_customer_id;
     end if;
   end if;
@@ -325,35 +328,31 @@ grant execute on function public.create_order_secure(
 ) to anon, authenticated;
 
 -- ----------------------------------------------------------------------------
--- MANUAL STEP — required to actually close the hole, read before running:
+-- AUTOMATED POLICY HARDENING — closes direct INSERT bypass on orders & order_items
 -- ----------------------------------------------------------------------------
--- The RPC above is now the *safe* way to create an order. But if `orders`
--- and `order_items` still have their old anon/public INSERT policies (the
--- ones the previous direct-insert checkout relied on), anyone can still
--- bypass this function entirely and insert a fabricated cheap order directly
--- via the REST API. That old INSERT policy must be removed.
---
--- 1. First, see what's actually there — run this and send me the output,
---    or just read it yourself:
---
---   select policyname, cmd, roles, qual, with_check
---   from pg_policies
---   where schemaname = 'public' and tablename in ('orders', 'order_items')
---   order by tablename, cmd;
---
--- 2. For each INSERT policy you see on `orders` / `order_items` that allows
---    anon/public to insert (there should be exactly one per table — this is
---    what let checkout write orders directly before), drop it by its real
---    name, e.g.:
---
---   drop policy "<paste the exact policyname from step 1>" on public.orders;
---   drop policy "<paste the exact policyname from step 1>" on public.order_items;
---
--- I'm not guessing table names here and auto-dropping, since a wrong guess
--- could remove a policy you still need. Once you drop the old INSERT
--- policies, checkout will only be able to create orders through
--- create_order_secure(), which is exactly the point.
---
--- Everything else — "Admins can view orders", "Admins can update orders",
--- "Admins can view order items" from supabase-admin-orders-policies.sql —
--- is untouched and keeps working as-is.
+-- The RPC above is the sole safe way to create an order. The block below ensures
+-- that table-level INSERT is revoked and any legacy anon/public INSERT policies
+-- on orders and order_items are automatically and idempotently dropped.
+-- Legitimate admin SELECT/UPDATE policies from supabase-admin-orders-policies.sql
+-- remain completely untouched.
+
+revoke insert on public.orders, public.order_items from public, anon, authenticated;
+
+alter table public.orders enable row level security;
+alter table public.order_items enable row level security;
+
+do $$
+declare
+  r record;
+begin
+  for r in (
+    select policyname, tablename
+    from pg_policies
+    where schemaname = 'public'
+      and tablename in ('orders', 'order_items')
+      and cmd = 'INSERT'
+      and ('anon' = any(roles) or 'public' = any(roles))
+  ) loop
+    execute format('drop policy %I on public.%I', r.policyname, r.tablename);
+  end loop;
+end $$;

@@ -57,13 +57,34 @@ export async function submitReview(
   rating: number,
   comment: string
 ): Promise<void> {
+  const cleanProductId = productId.trim();
+  const cleanAuthor = author.trim();
+  const cleanComment = comment.trim();
+  const roundedRating = Math.round(Number(rating));
+
+  if (!cleanProductId) {
+    throw new Error('Не указан товар для отзыва.');
+  }
+
+  if (!cleanAuthor || cleanAuthor.length > 100) {
+    throw new Error('Имя автора должно содержать от 1 до 100 символов.');
+  }
+
+  if (isNaN(roundedRating) || roundedRating < 1 || roundedRating > 5) {
+    throw new Error('Рейтинг должен быть от 1 до 5 звёзд.');
+  }
+
+  if (!cleanComment || cleanComment.length > 2000) {
+    throw new Error('Комментарий должен содержать от 1 до 2000 символов.');
+  }
+
   const { error } = await supabase.from('product_reviews').insert({
     id: crypto.randomUUID(),
-    product_id: productId,
-    author: author.trim(),
-    rating,
+    product_id: cleanProductId,
+    author: cleanAuthor,
+    rating: roundedRating,
     review_date: new Date().toISOString().slice(0, 10),
-    comment: comment.trim(),
+    comment: cleanComment,
     verified: false,
     status: 'pending',
   });

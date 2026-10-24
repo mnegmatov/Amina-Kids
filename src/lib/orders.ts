@@ -87,6 +87,34 @@ export async function createOrder(
     throw new Error('Корзина пуста');
   }
 
+  const fullName = details.fullName.trim();
+  const phone = details.phone.trim();
+  const city = details.city.trim();
+  const phoneDigits = phone.replace(/\D/g, '');
+
+  if (!fullName) {
+    throw new Error('Укажите имя получателя');
+  }
+  if (fullName.length > 200) {
+    throw new Error('Имя получателя слишком длинное (максимум 200 символов)');
+  }
+  if (!phone || phoneDigits.length < 7) {
+    throw new Error('Укажите корректный номер телефона (не менее 7 цифр)');
+  }
+  if (!city) {
+    throw new Error('Укажите город доставки');
+  }
+
+  const validDelivery = ['courier', 'pickup', 'showroom'];
+  if (!validDelivery.includes(details.deliveryMethod)) {
+    throw new Error('Некорректный способ доставки');
+  }
+
+  const validPayment = ['card', 'cash'];
+  if (!validPayment.includes(details.paymentMethod)) {
+    throw new Error('Некорректный способ оплаты');
+  }
+
   if (!isSupabaseConfigured) {
     console.error('[createOrder] Supabase is not configured (missing or placeholder environment variables).');
     throw new Error(
@@ -94,13 +122,19 @@ export async function createOrder(
     );
   }
 
-  const items = cartItems.map((item) => ({
-    product_id: item.product.id,
-    color_name: item.selectedColor.name,
-    color_hex: item.selectedColor.hex,
-    size: item.selectedSize,
-    quantity: item.quantity,
-  }));
+  const items = cartItems.map((item) => {
+    const qty = Math.round(Number(item.quantity));
+    if (isNaN(qty) || qty <= 0 || qty > 100) {
+      throw new Error(`Некорректное количество товара «${item.product.name}» (от 1 до 100).`);
+    }
+    return {
+      product_id: item.product.id,
+      color_name: item.selectedColor.name,
+      color_hex: item.selectedColor.hex,
+      size: item.selectedSize,
+      quantity: qty,
+    };
+  });
 
   try {
     const { data, error } = await supabase.rpc('create_order_secure', {

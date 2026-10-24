@@ -72,6 +72,10 @@ alter table public.product_reviews drop constraint if exists product_reviews_sta
 alter table public.product_reviews
   add constraint product_reviews_status_check check (status in ('pending', 'approved', 'rejected'));
 
+alter table public.product_reviews drop constraint if exists product_reviews_rating_range;
+alter table public.product_reviews
+  add constraint product_reviews_rating_range check (rating >= 1 and rating <= 5);
+
 -- ----------------------------------------------------------------------------
 -- STEP 3 — RLS. Enabling RLS on a table that already has it enabled is a
 -- harmless no-op; each policy is dropped and recreated by name so this is
@@ -92,13 +96,20 @@ using (status = 'approved');
 
 -- Anyone can submit a review, but it can only ever land as 'pending' — the
 -- with_check makes this a hard database constraint, not just a UI default,
--- so a client can't insert itself straight to 'approved'.
+-- so a client can't insert itself straight to 'approved', nor submit ratings
+-- outside 1-5 or blank fields.
 drop policy if exists "Anyone can submit a pending review" on public.product_reviews;
 create policy "Anyone can submit a pending review"
 on public.product_reviews
 for insert
 to anon, authenticated
-with check (status = 'pending');
+with check (
+  status = 'pending'
+  and rating >= 1
+  and rating <= 5
+  and length(trim(author)) > 0
+  and length(trim(comment)) > 0
+);
 
 -- Admins can see every review regardless of status, for the moderation queue.
 drop policy if exists "Admins can view all reviews" on public.product_reviews;
