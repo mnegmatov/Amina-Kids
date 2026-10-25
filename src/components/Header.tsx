@@ -170,8 +170,14 @@ export const Header: React.FC<HeaderProps> = ({
             onKeyDown={(e) => e.key === 'Enter' && onNavigate('home')}
             aria-label="AMINA KIDS на главную"
           >
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#F8EBE8] flex items-center justify-center text-[#E2A69B] border border-[#E2A69B]/40 group-hover:bg-[#E2A69B] group-hover:text-white transition-all duration-300 shadow-sm">
-              <span className="font-serif font-bold text-lg sm:text-xl leading-none">A</span>
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#F8EBE8] flex items-center justify-center border border-[#E2A69B]/40 group-hover:border-[#E2A69B] group-hover:scale-105 transition-all duration-300 shadow-sm p-1 overflow-hidden shrink-0">
+              <img
+                src="/logo-bear.png"
+                alt="Amina Kids Logo"
+                className="w-full h-full object-contain"
+                width={40}
+                height={40}
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-lg sm:text-2xl font-serif tracking-widest text-[#4A3A0B] font-bold uppercase leading-none">
@@ -448,8 +454,14 @@ export const Header: React.FC<HeaderProps> = ({
                   {/* Drawer Header (non-collapsible) */}
                   <div className="shrink-0 flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 border-b border-[#E8E0D5] bg-[#FDFBF7]">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-[#F8EBE8] flex items-center justify-center text-[#E2A69B] border border-[#E2A69B]/40 font-serif font-bold text-base shadow-xs">
-                        A
+                      <div className="w-8 h-8 rounded-full bg-[#F8EBE8] flex items-center justify-center border border-[#E2A69B]/40 p-0.5 overflow-hidden shadow-xs shrink-0">
+                        <img
+                          src="/logo-bear.png"
+                          alt="Amina Kids Logo"
+                          className="w-full h-full object-contain"
+                          width={32}
+                          height={32}
+                        />
                       </div>
                       <div className="flex flex-col">
                         <span className="font-serif font-bold text-sm tracking-wider text-[#4A3A0B] uppercase leading-tight">

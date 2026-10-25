@@ -18,8 +18,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* Brand Info */}
           <div className="space-y-3.5 sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-full bg-[#E2A69B] flex items-center justify-center text-white font-serif font-bold text-lg shadow-xs">
-                A
+              <div className="w-9 h-9 rounded-full bg-[#F8EBE8] flex items-center justify-center border border-[#E2A69B]/40 p-1 overflow-hidden shadow-xs shrink-0">
+                <img
+                  src="/logo-bear.png"
+                  alt="Amina Kids Logo"
+                  className="w-full h-full object-contain"
+                  width={36}
+                  height={36}
+                />
               </div>
               <span className="font-serif font-bold text-xl text-white tracking-widest uppercase">
                 Amina <span className="text-[#E2A69B]">Kids</span>
