@@ -548,16 +548,16 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="fixed inset-0 bg-[#2C2008]/60 backdrop-blur-sm"
+              transition={{ duration: 0.18 }}
+              className="fixed inset-0 bg-[#2C2008]/50 backdrop-blur-xs"
             />
 
             {/* Sheet Container */}
             <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'tween', duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+              initial={{ transform: 'translateY(100%)' }}
+              animate={{ transform: 'translateY(0%)' }}
+              exit={{ transform: 'translateY(100%)' }}
+              transition={{ duration: 0.24, ease: [0.32, 0.72, 0, 1] }}
               className="relative bg-white rounded-t-3xl shadow-2xl max-h-[88dvh] overscroll-contain flex flex-col border-t border-[#E8E0D5] z-10"
             >
               {/* Mobile handle indicator */}

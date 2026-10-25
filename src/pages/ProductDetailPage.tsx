@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Product, ProductColor, ProductReview } from '../types';
 import { ProductCard } from '../components/ProductCard';
 import { CATEGORIES_INFO } from '../data/products';
-import { Star, Heart, ShoppingBag, ShieldCheck, Truck, Ruler, Check, ChevronRight, MessageSquare, AlertCircle, ChevronLeft, Zap } from 'lucide-react';
+import { Star, Heart, ShoppingBag, ShieldCheck, Truck, Ruler, Check, ChevronRight, MessageSquare, AlertCircle, ChevronLeft, Zap, ArrowLeft } from 'lucide-react';
 import { formatPrice } from '../utils/format';
 import { fetchApprovedReviews, submitReview } from '../lib/reviews';
 import { AnimatePresence, motion } from 'motion/react';
@@ -177,16 +177,33 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-8 sm:space-y-12 pb-28 sm:pb-20 lg:pb-10">
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs text-[#7A695D] overflow-x-auto pb-1" aria-label="Хлебные крошки">
-        <button onClick={onNavigateToCatalog} className="hover:text-[#4A3A0B] transition-colors cursor-pointer shrink-0">
-          Каталог
+      {/* Top Bar: Back Button & Breadcrumbs */}
+      <div className="flex items-center gap-3 overflow-x-auto pb-1 no-scrollbar select-none">
+        <button
+          onClick={() => {
+            if (window.history.length > 1) {
+              window.history.back();
+            } else {
+              onNavigateToCatalog();
+            }
+          }}
+          className="min-h-[38px] inline-flex items-center gap-1.5 text-xs font-bold text-[#4A3A0B] hover:text-[#E2A69B] hover:border-[#E2A69B] bg-white px-3.5 py-1.5 rounded-full border border-[#E8E0D5] shadow-xs active:scale-95 transition-all cursor-pointer shrink-0"
+          aria-label="Вернуться назад"
+        >
+          <ArrowLeft className="w-3.5 h-3.5 text-[#E2A69B]" />
+          <span>Назад</span>
         </button>
-        <ChevronRight className="w-3.5 h-3.5 shrink-0 text-[#7A695D]/60" />
-        <span className="shrink-0">{CATEGORIES_INFO.find((c) => c.id === product.category)?.title ?? product.category}</span>
-        <ChevronRight className="w-3.5 h-3.5 shrink-0 text-[#7A695D]/60" />
-        <span className="text-[#4A3A0B] font-semibold truncate max-w-[200px] sm:max-w-none">{product.name}</span>
-      </nav>
+
+        <nav className="flex items-center gap-2 text-xs text-[#7A695D] overflow-x-auto" aria-label="Хлебные крошки">
+          <button onClick={onNavigateToCatalog} className="hover:text-[#4A3A0B] transition-colors cursor-pointer shrink-0">
+            Каталог
+          </button>
+          <ChevronRight className="w-3.5 h-3.5 shrink-0 text-[#7A695D]/60" />
+          <span className="shrink-0">{CATEGORIES_INFO.find((c) => c.id === product.category)?.title ?? product.category}</span>
+          <ChevronRight className="w-3.5 h-3.5 shrink-0 text-[#7A695D]/60" />
+          <span className="text-[#4A3A0B] font-semibold truncate max-w-[200px] sm:max-w-none">{product.name}</span>
+        </nav>
+      </div>
 
       {/* Main Product Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-start">
@@ -690,10 +707,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
       <AnimatePresence>
         {showStickyBar && (
           <motion.div
-            initial={{ y: '100%', opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: '100%', opacity: 0 }}
-            transition={{ duration: 0.25, ease: [0.32, 0.72, 0, 1] }}
+            initial={{ transform: 'translateY(100%)', opacity: 0 }}
+            animate={{ transform: 'translateY(0%)', opacity: 1 }}
+            exit={{ transform: 'translateY(100%)', opacity: 0 }}
+            transition={{ duration: 0.2, ease: [0.32, 0.72, 0, 1] }}
             className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-[#E8E0D5] p-3 pb-safe z-40 lg:hidden shadow-[0_-4px_20px_rgba(74,58,11,0.08)]"
           >
             <div className="flex items-center justify-between gap-3 max-w-lg mx-auto">

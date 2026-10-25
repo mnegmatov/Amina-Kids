@@ -1,0 +1,17 @@
+{
+  "short_name": "Amina Kids",
+  "name": "AMINA KIDS — Одежда из хлопкового муслина",
+  "icons": [
+    {
+      "src": "/logo-bear.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#F7F1E5",
+  "theme_color": "#F7F1E5",
+  "display": "standalone",
+  "orientation": "portrait"
+}

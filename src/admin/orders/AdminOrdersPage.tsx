@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, ChevronRight, Loader2, Package, RefreshCw, ShoppingBag, User, X } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Loader2, Package, RefreshCw, ShoppingBag, User, X, Printer } from 'lucide-react';
 import { navigate } from '../navigation';
 import { formatPrice } from '../../utils/format';
 import { useBodyScrollLock } from '../../utils/useBodyScrollLock';
@@ -301,13 +301,23 @@ export const AdminOrdersPage: React.FC = () => {
                   <p className="text-[10px] uppercase tracking-wide text-[#8A786A]">Заказ</p>
                   <h2 id="order-drawer-title" className="font-serif text-lg font-bold text-[#33261D]">{shortId(selectedOrder.id)}</h2>
                 </div>
-                <button
-                  onClick={() => setSelectedOrder(null)}
-                  className="p-2.5 rounded-xl hover:bg-[#FAF6F0] text-[#7A695D] cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"
-                  aria-label="Закрыть детали заказа"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => window.print()}
+                    className="p-2 rounded-xl border border-[#E8E0D5] hover:bg-[#FAF6F0] text-[#4A3A0B] cursor-pointer min-h-[40px] px-3 inline-flex items-center gap-1.5 text-xs font-bold transition-all active:scale-95"
+                    title="Печать накладной для курьера"
+                  >
+                    <Printer className="w-4 h-4 text-[#E2A69B]" />
+                    <span>Печать</span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedOrder(null)}
+                    className="p-2.5 rounded-xl hover:bg-[#FAF6F0] text-[#7A695D] cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"
+                    aria-label="Закрыть детали заказа"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
 
               <div className="p-4 sm:p-5 pb-safe pb-8 sm:pb-6 space-y-5 flex-1">

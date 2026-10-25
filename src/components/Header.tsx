@@ -435,9 +435,9 @@ export const Header: React.FC<HeaderProps> = ({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.22, ease: 'easeOut' }}
+                  transition={{ duration: 0.18 }}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="fixed inset-0 bg-[#2C2008]/60 backdrop-blur-xs cursor-pointer"
+                  className="fixed inset-0 bg-[#2C2008]/50 backdrop-blur-xs cursor-pointer"
                   aria-hidden="true"
                 />
 
@@ -446,7 +446,7 @@ export const Header: React.FC<HeaderProps> = ({
                   initial={{ transform: 'translateX(-100%)' }}
                   animate={{ transform: 'translateX(0%)' }}
                   exit={{ transform: 'translateX(-100%)' }}
-                  transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
+                  transition={{ duration: 0.24, ease: [0.32, 0.72, 0, 1] }}
                   className="fixed top-0 bottom-0 left-0 z-50 w-[85vw] max-w-[340px] bg-white shadow-2xl flex flex-col border-r border-[#E8E0D5] h-[100dvh] max-h-[100dvh] overflow-hidden select-none"
                   onClick={(e) => e.stopPropagation()}
                   aria-label="Главное меню навигации"

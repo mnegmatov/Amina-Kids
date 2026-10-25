@@ -18,6 +18,7 @@ import { ProductModal } from './components/ProductModal';
 import { SizeChartModal } from './components/SizeChartModal';
 import { QuickBuyModal } from './components/QuickBuyModal';
 import { CartDrawer } from './components/CartDrawer';
+import { WhatsAppFloat } from './components/WhatsAppFloat';
 import { MAX_CART_QUANTITY } from './lib/stockCheck';
 
 import { HomePage } from './pages/HomePage';
@@ -94,6 +95,60 @@ export default function App() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Browser History & URL synchronization (Back / Forward button support)
+  useEffect(() => {
+    // 1. Initial parse on load/refresh
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('product');
+    const pageParam = params.get('page') as PageType | null;
+    const catParam = params.get('cat') as ProductCategory | null;
+
+    if (productId && products.length > 0) {
+      const found = products.find((p) => p.id === productId);
+      if (found) {
+        setSelectedProduct(found);
+        setActivePage('product');
+        return;
+      }
+    }
+
+    if (pageParam) {
+      setActivePage(pageParam);
+      if (pageParam === 'catalog' && catParam) {
+        setActiveCategory(catParam);
+      }
+    }
+  }, [products]);
+
+  useEffect(() => {
+    // 2. Listen to browser Back / Forward (popstate) navigation
+    const handlePopState = (event: PopStateEvent) => {
+      const state = event.state;
+      const params = new URLSearchParams(window.location.search);
+      const productId = state?.productId || params.get('product');
+      const page = (state?.page || params.get('page') || 'home') as PageType;
+      const category = (state?.category || params.get('cat') || 'all') as ProductCategory | 'all';
+
+      if (productId && products.length > 0) {
+        const found = products.find((p) => p.id === productId);
+        if (found) {
+          setSelectedProduct(found);
+          setActivePage('product');
+          return;
+        }
+      }
+
+      setSelectedProduct(null);
+      setActivePage(page);
+      if (page === 'catalog') {
+        setActiveCategory(category);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [products]);
 
   // Modals & Drawers
   const [quickViewProduct, setQuickViewProduct] =
@@ -315,15 +370,35 @@ export default function App() {
     }
   };
 
-  // Navigation
+  // Navigation with Browser History support (Back/Forward buttons)
   const handleNavigate = (
     page: PageType,
-    category?: ProductCategory
+    category?: ProductCategory,
+    pushHistory: boolean = true
   ) => {
     setActivePage(page);
+    setSelectedProduct(null);
 
+    const targetCategory = category ?? 'all';
     if (page === 'catalog') {
-      setActiveCategory(category ?? 'all');
+      setActiveCategory(targetCategory);
+    }
+
+    if (pushHistory) {
+      const params = new URLSearchParams();
+      if (page !== 'home') {
+        params.set('page', page);
+        if (page === 'catalog' && targetCategory !== 'all') {
+          params.set('cat', targetCategory);
+        }
+      }
+      const query = params.toString();
+      const newUrl = query ? `?${query}` : window.location.pathname;
+      window.history.pushState(
+        { page, category: targetCategory, productId: null },
+        '',
+        newUrl
+      );
     }
 
     window.scrollTo({
@@ -332,9 +407,20 @@ export default function App() {
     });
   };
 
-  const handleSelectProduct = (product: Product) => {
+  const handleSelectProduct = (product: Product, pushHistory: boolean = true) => {
     setSelectedProduct(product);
     setActivePage('product');
+
+    if (pushHistory) {
+      const params = new URLSearchParams();
+      params.set('product', product.id);
+      const newUrl = `?${params.toString()}`;
+      window.history.pushState(
+        { page: 'product', productId: product.id },
+        '',
+        newUrl
+      );
+    }
 
     window.scrollTo({
       top: 0,
@@ -578,6 +664,9 @@ export default function App() {
         promoDiscount={promoDiscount}
         onApplyPromo={handleApplyPromo}
       />
+
+      {/* WhatsApp Floating Contact Button */}
+      <WhatsAppFloat />
 
       {/* Toast Notifications */}
       <Toast

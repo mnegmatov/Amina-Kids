@@ -118,19 +118,19 @@ export const QuickBuyModal: React.FC<QuickBuyModalProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.18 }}
             onClick={() => {
               if (!submitting) onClose();
             }}
-            className="absolute inset-0 bg-[#2C2008]/60 backdrop-blur-sm"
+            className="absolute inset-0 bg-[#2C2008]/50 backdrop-blur-xs"
           />
 
           {/* Modal Container */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: 8 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 8 }}
-            transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
+            initial={{ opacity: 0, transform: 'scale(0.97) translateY(8px)' }}
+            animate={{ opacity: 1, transform: 'scale(1) translateY(0px)' }}
+            exit={{ opacity: 0, transform: 'scale(0.97) translateY(8px)' }}
+            transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
             className="relative w-full max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl p-5 sm:p-6 border border-[#E8E0D5] max-h-[90dvh] overflow-y-auto overscroll-contain pb-safe z-10"
             onClick={(e) => e.stopPropagation()}
           >

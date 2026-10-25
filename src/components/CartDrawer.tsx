@@ -129,16 +129,16 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            transition={{ duration: 0.18 }}
+            className="absolute inset-0 bg-[#2C2008]/50 backdrop-blur-xs"
           />
 
       <div className="fixed inset-y-0 right-0 max-w-full flex">
         <motion.div
-          initial={{ x: '100%' }}
-          animate={{ x: 0 }}
-          exit={{ x: '100%' }}
-          transition={{ type: 'tween', duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+          initial={{ transform: 'translateX(100%)' }}
+          animate={{ transform: 'translateX(0%)' }}
+          exit={{ transform: 'translateX(100%)' }}
+          transition={{ duration: 0.24, ease: [0.32, 0.72, 0, 1] }}
           className="w-full max-w-md bg-white shadow-2xl flex flex-col border-l border-[#E8E0D5] h-full"
         >
           {/* Header */}

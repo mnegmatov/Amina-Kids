@@ -43,7 +43,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div
       onClick={handleCardClick}
-      className="flex flex-col group relative bg-white rounded-2xl sm:rounded-3xl border border-[#E8E0D5]/80 p-2.5 sm:p-3 shadow-[0_2px_10px_rgba(74,58,11,0.03)] hover:shadow-[0_14px_34px_rgba(74,58,11,0.08)] transition-all duration-300 cursor-pointer hover:border-[#E2A69B]/60 select-none"
+      className="flex flex-col group relative bg-white rounded-2xl sm:rounded-3xl border border-[#E8E0D5]/80 p-2.5 sm:p-3 shadow-[0_2px_8px_rgba(74,58,11,0.03)] hover:shadow-[0_12px_28px_rgba(74,58,11,0.07)] transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:-translate-y-0.5 active:scale-[0.99] cursor-pointer hover:border-[#E2A69B]/60 select-none"
       role="button"
       tabIndex={0}
       onKeyDown={(e) => {
@@ -56,12 +56,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <img
           src={product.images[0]}
           alt={product.name}
-          className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
+          className="h-full w-full object-cover object-center transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.03]"
           loading="lazy"
         />
 
         {/* Subtle Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#2C2008]/20 via-transparent to-transparent opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#2C2008]/20 via-transparent to-transparent opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 pointer-events-none" />
 
         {/* Badges Top Left (Pill format) */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10 pointer-events-none">
@@ -85,12 +85,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         {/* Wishlist Button Top Right */}
         <motion.button
           type="button"
-          whileTap={{ scale: 0.85 }}
+          whileTap={{ scale: 0.88 }}
           onClick={(e) => {
             e.stopPropagation();
             onToggleWishlist(product);
           }}
-          className={`absolute top-2 right-2 sm:top-2.5 sm:right-2.5 w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center rounded-full backdrop-blur-md transition-all z-20 cursor-pointer ${
+          className={`absolute top-2 right-2 sm:top-2.5 sm:right-2.5 w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center rounded-full backdrop-blur-md transition-colors duration-150 z-20 cursor-pointer ${
             isWishlisted
               ? 'bg-[#E2A69B] text-white shadow-md'
               : 'bg-white/90 text-[#4A3A0B]/70 hover:text-[#E2A69B] hover:bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)]'
@@ -99,9 +99,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         >
           <motion.span
             key={isWishlisted ? 'wishlisted' : 'unwishlisted'}
-            initial={{ scale: 0.8 }}
+            initial={{ scale: 0.85 }}
             animate={{ scale: 1 }}
-            transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+            transition={{ type: 'spring', duration: 0.3, bounce: 0.25 }}
             className="flex items-center justify-center"
           >
             <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} />
@@ -112,10 +112,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         <button
           type="button"
           onClick={handleAdd}
-          className={`hidden sm:flex absolute bottom-3 left-1/2 -translate-x-1/2 w-[88%] py-2.5 rounded-full items-center justify-center gap-1.5 text-center text-xs font-bold uppercase tracking-wider transition-all duration-300 shadow-md z-20 cursor-pointer ${
+          className={`hidden sm:flex absolute bottom-3 left-1/2 -translate-x-1/2 w-[88%] py-2.5 rounded-full items-center justify-center gap-1.5 text-center text-xs font-bold uppercase tracking-wider transition-[transform,opacity,background-color,color] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-md z-20 cursor-pointer active:scale-[0.97] ${
             added
               ? 'bg-emerald-600 text-white translate-y-0 opacity-100'
-              : 'bg-white/95 backdrop-blur-xs text-[#4A3A0B] hover:bg-[#E2A69B] hover:text-white translate-y-12 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 active:scale-[0.97]'
+              : 'bg-white/95 backdrop-blur-xs text-[#4A3A0B] hover:bg-[#E2A69B] hover:text-white translate-y-10 group-hover:translate-y-0 opacity-0 group-hover:opacity-100'
           }`}
           aria-label={`Добавить ${product.name} в корзину`}
         >
