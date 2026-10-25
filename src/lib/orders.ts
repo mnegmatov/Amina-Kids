@@ -170,6 +170,37 @@ export async function createOrder(
       throw new Error('Не удалось оформить заказ: сервер не вернул подтверждение.');
     }
 
+    // Asynchronously notify manager in Telegram (non-blocking)
+    try {
+      supabase.functions
+        .invoke('send-order-telegram', {
+          body: {
+            orderId: row.order_id,
+            fullName: details.fullName.trim(),
+            phone: details.phone.trim(),
+            city: details.city.trim(),
+            address: details.address?.trim() || '',
+            deliveryMethod: details.deliveryMethod,
+            paymentMethod: details.paymentMethod,
+            comment: details.comment?.trim() || '',
+            promoCode: details.promoCode || '',
+            items: cartItems.map((ci) => ({
+              name: ci.product.name,
+              color: ci.selectedColor.name,
+              size: ci.selectedSize,
+              quantity: ci.quantity,
+              price: ci.product.price,
+            })),
+            totalAmount: row.total_amount,
+          },
+        })
+        .catch((tgErr) => {
+          console.warn('[createOrder] Telegram notification dispatch failed:', tgErr);
+        });
+    } catch (notifyErr) {
+      console.warn('[createOrder] Error preparing Telegram notification:', notifyErr);
+    }
+
     return {
       orderId: row.order_id,
       totals: {
